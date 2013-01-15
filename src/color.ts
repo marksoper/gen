@@ -1,7 +1,7 @@
 
 
 
-module gen {
+module GEN {
 
   function bound(num: number) {
     return Math.min(255, Math.max(0, Math.floor(num))); 
@@ -52,8 +52,11 @@ module gen {
     getRandomShade(coeff, offset) {
       var seed = Math.random();
       var rgb = [];
+      var self = this;
+      var skew = coeff * seed;
       ["r", "g", "b"].forEach(function(c) {
-        rgb.push(Math.floor(Math.max(0, Math.min(255, ((255 - this[c]) / 255) + coeff*seed + this[c] - offset))));
+        rgb.push(bound(skew*self[c]));
+        //rgb.push(Math.floor(Math.max(0, Math.min(255, ((255 - self[c]) / 255) + coeff*seed + self[c] - offset))));
       });
       return new Color(rgb);
     }

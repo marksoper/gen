@@ -2,7 +2,7 @@
 
 ///<reference path="color.ts"/>
 
-module gen {
+module GEN {
 
   export var version = '0.1.0';
 

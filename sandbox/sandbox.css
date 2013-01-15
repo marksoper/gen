@@ -4,5 +4,5 @@ canvas#canvas {
   display:block;
   overflow:hidden;
   max-width: 100%;
-  height: auto;
+  height: 10000px;
 }

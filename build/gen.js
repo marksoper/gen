@@ -1,5 +1,5 @@
-var gen;
-(function (gen) {
+var GEN;
+(function (GEN) {
     function bound(num) {
         return Math.min(255, Math.max(0, Math.floor(num)));
     }
@@ -44,20 +44,22 @@ var gen;
         Color.prototype.getRandomShade = function (coeff, offset) {
             var seed = Math.random();
             var rgb = [];
+            var self = this;
+            var skew = coeff * seed;
             [
                 "r", 
                 "g", 
                 "b"
             ].forEach(function (c) {
-                rgb.push(Math.floor(Math.max(0, Math.min(255, ((255 - this[c]) / 255) + coeff * seed + this[c] - offset))));
+                rgb.push(bound(skew * self[c]));
             });
             return new Color(rgb);
         };
         return Color;
     })();
-    gen.Color = Color;    
-})(gen || (gen = {}));
-var gen;
-(function (gen) {
-    gen.version = '0.1.0';
-})(gen || (gen = {}));
+    GEN.Color = Color;    
+})(GEN || (GEN = {}));
+var GEN;
+(function (GEN) {
+    GEN.version = '0.1.0';
+})(GEN || (GEN = {}));
