@@ -1,11 +1,11 @@
 
 
 
-module color {
+module gen {
 
   function bound(num: number) {
     return Math.min(255, Math.max(0, Math.floor(num))); 
-  };
+  }
 
   export class Color {
 
