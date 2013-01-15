@@ -49,13 +49,18 @@ module GEN {
       return '#' + (this.b | (this.g << 8) | (this.r << 16)).toString(16);
     }
 
-    getRandomShade(coeff, offset) {
-      var seed = Math.random();
+    //
+    // TODO: look into color theory and HSL / HSV for better shading
+    //
+    getRandomShade(range) {
+      var rangeNorm = (255 - range) / 255;
+      var delta = rangeNorm * Math.random() - (rangeNorm / 2);
       var rgb = [];
       var self = this;
-      var skew = coeff * seed;
+      var cNorm;
       ["r", "g", "b"].forEach(function(c) {
-        rgb.push(bound(skew*self[c]));
+        cNorm = (255 - self[c]) / 255;
+        rgb.push(bound( 255 * ( (cNorm + cNorm*delta) ) ) );
         //rgb.push(Math.floor(Math.max(0, Math.min(255, ((255 - self[c]) / 255) + coeff*seed + self[c] - offset))));
       });
       return new Color(rgb);

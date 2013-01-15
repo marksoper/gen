@@ -41,17 +41,19 @@ var GEN;
         Color.prototype.toHexString = function () {
             return '#' + (this.b | (this.g << 8) | (this.r << 16)).toString(16);
         };
-        Color.prototype.getRandomShade = function (coeff, offset) {
-            var seed = Math.random();
+        Color.prototype.getRandomShade = function (range) {
+            var rangeNorm = (255 - range) / 255;
+            var delta = rangeNorm * Math.random() - (rangeNorm / 2);
             var rgb = [];
             var self = this;
-            var skew = coeff * seed;
+            var cNorm;
             [
                 "r", 
                 "g", 
                 "b"
             ].forEach(function (c) {
-                rgb.push(bound(skew * self[c]));
+                cNorm = (255 - self[c]) / 255;
+                rgb.push(bound(255 * (cNorm + cNorm * delta)));
             });
             return new Color(rgb);
         };
