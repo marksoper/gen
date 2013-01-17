@@ -1,7 +1,11 @@
 
-
-
 var mainColorSandbox = function() {
+
+ // genColorKeywords = {"salmon": 0xFA8072, "sandybrown": 0xF4A460, "seagreen": 0x2E8B57};
+  var colorCount = 0;
+  for (var key in genColorKeywords) {
+    colorCount += 1;
+  }
 
   var canvas = document.getElementById('canvas');
   var context = canvas.getContext('2d');
@@ -10,6 +14,10 @@ var mainColorSandbox = function() {
   var rowsPerColorGroup = 10;
   var margin = 10;
   var groupHeight = rowHeight * rowsPerColorGroup;
+
+  canvas.width  = window.innerWidth;
+  canvas.height = colorCount * (groupHeight + margin);
+
   var hexColorStr;
   var color;
   var shade;
@@ -21,17 +29,19 @@ var mainColorSandbox = function() {
     context.fillRect(x,y,width,height);
   };
 
-  genColorKeywords = {"salmon": 0xFA8072} //, "sandybrown": 0xF4A460, "seagreen": 0x2E8B57};
-
   for (var kw in genColorKeywords) {
     hexColorStr = genColorKeywords[kw].toString(16);
     color = new GEN.Color(hexColorStr);
+    y = y + margin;
     for (var r = 0; r < rowsPerColorGroup - 1; r++) {
       shade = color.getRandomShade(20,0);
       drawRect(0,y,canvas.width,rowHeight,shade.rgba());
       y = y + rowHeight;
     }
   }
+
+  // for debugging
+  window.context = context;
 
 };
 

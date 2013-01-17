@@ -3,6 +3,4 @@
 canvas#canvas {
   display:block;
   overflow:hidden;
-  max-width: 100%;
-  height: 10000px;
 }
