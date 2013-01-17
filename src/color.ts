@@ -52,17 +52,21 @@ module GEN {
     //
     // TODO: look into color theory and HSL / HSV for better shading
     //
-    getRandomShade(range) {
-      var rangeNorm = (255 - range) / 255;
-      var delta = rangeNorm * Math.random() - (rangeNorm / 2);
-      var rgb = [];
-      var self = this;
+    getRandomShade(rangeCoeff) {
+      var seed = 2 * Math.random() - 1;
       var cNorm;
+      var delta;
+      var cNew;
       ["r", "g", "b"].forEach(function(c) {
         cNorm = (255 - self[c]) / 255;
-        rgb.push(bound( 255 * ( (cNorm + cNorm*delta) ) ) );
-        //rgb.push(Math.floor(Math.max(0, Math.min(255, ((255 - self[c]) / 255) + coeff*seed + self[c] - offset))));
-      });
+        if (seed >= 0) {
+          delta = (1 - cNorm) * seed * range;
+        } else {
+          delta = cNorm * seed * range;
+        }
+        cNew = bound( 255 * (cNorm + delta) );
+        rgb.push(cNew);
+      }
       return new Color(rgb);
     }
 
