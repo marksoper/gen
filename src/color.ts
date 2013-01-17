@@ -57,16 +57,18 @@ module GEN {
       var cNorm;
       var delta;
       var cNew;
+      var rgb = [];
+      var self = this;
       ["r", "g", "b"].forEach(function(c) {
-        cNorm = (255 - self[c]) / 255;
+        cNorm = self[c] / 255;
         if (seed >= 0) {
-          delta = (1 - cNorm) * seed * range;
+          delta = (1 - cNorm) * seed * rangeCoeff;
         } else {
-          delta = cNorm * seed * range;
+          delta = cNorm * seed * rangeCoeff;
         }
         cNew = bound( 255 * (cNorm + delta) );
         rgb.push(cNew);
-      }
+      });
       return new Color(rgb);
     }
 

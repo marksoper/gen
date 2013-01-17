@@ -1,4 +1,7 @@
 
+body {
+  margin:10px;
+}
 
 canvas#canvas {
   display:block;
