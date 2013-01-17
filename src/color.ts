@@ -61,11 +61,14 @@ module GEN {
       var self = this;
       ["r", "g", "b"].forEach(function(c) {
         cNorm = self[c] / 255;
+        delta = seed * rangeCoeff * Math.min(cNorm, 1-cNorm);
+        /*
         if (seed >= 0) {
           delta = (1 - cNorm) * seed * rangeCoeff;
         } else {
           delta = cNorm * seed * rangeCoeff;
         }
+        */
         cNew = bound( 255 * (cNorm + delta) );
         rgb.push(cNew);
       });

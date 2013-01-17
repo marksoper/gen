@@ -54,11 +54,7 @@ var GEN;
                 "b"
             ].forEach(function (c) {
                 cNorm = self[c] / 255;
-                if(seed >= 0) {
-                    delta = (1 - cNorm) * seed * rangeCoeff;
-                } else {
-                    delta = cNorm * seed * rangeCoeff;
-                }
+                delta = seed * rangeCoeff * Math.min(cNorm, 1 - cNorm);
                 cNew = bound(255 * (cNorm + delta));
                 rgb.push(cNew);
             });

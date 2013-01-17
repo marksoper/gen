@@ -2,7 +2,7 @@
 var mainColorSandbox = function() {
 
   // constrain colors for debugging
-  genColorKeywords = {"salmon": 0xFA8072, "white": 0xffffff, "black": 0x000000, "sandybrown": 0xF4A460, "seagreen": 0x2E8B57};
+  //genColorKeywords = {"salmon": 0xFA8072, "white": 0xffffff, "black": 0x000000, "sandybrown": 0xF4A460, "seagreen": 0x2E8B57};
   var colorCount = 0;
   for (var key in genColorKeywords) {
     colorCount += 1;
@@ -57,7 +57,7 @@ var mainColorSandbox = function() {
     // draw a strip of shades for that color
     //
     while (x < (canvas.width - 2*margin) ) {
-      shade = color.getRandomShade(0.4);
+      shade = color.getRandomShade(0.6);
       drawRect(x,y,shadeWidth,groupHeight,shade.rgba());
       x += shadeWidth;
     }
