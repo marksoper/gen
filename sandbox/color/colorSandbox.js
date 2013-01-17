@@ -57,7 +57,7 @@ var mainColorSandbox = function() {
     // draw a strip of shades for that color
     //
     while (x < (canvas.width - 2*margin) ) {
-      shade = color.getRandomShade(0.6);
+      shade = color.getRandomShade(0.9);
       drawRect(x,y,shadeWidth,groupHeight,shade.rgba());
       x += shadeWidth;
     }
