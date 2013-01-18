@@ -25,7 +25,7 @@ var mainPainterlyArc = function() {
 
   canvas.width  = window.innerWidth;
   var radius = Math.floor(canvas.width / 5);
-  canvas.height = colorCount * (2*radius + margin);
+  canvas.height = colorCount * (2*radius + 4*margin);
 
   var hexColorStr;
 
