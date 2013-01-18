@@ -1,17 +1,12 @@
 
 var mainPainterlyArc = function() {
-
-  // constrain colors for debugging
-  //genColorKeywords = {"salmon": 0xFA8072, "white": 0xffffff, "black": 0x000000, "sandybrown": 0xF4A460, "seagreen": 0x2E8B57};
   
-  // constrain genColorKeywords
-  var k=0;
-  for (var kw in genColorKeywords) {
-    k+=1;
-    if (k % 11) {
-      delete genColorKeywords[kw];
-    }
-  }
+  // filter genColorKeywords
+  var colorKeywords = genColorKeywords;
+  genColorKeywords = {};
+  ["chocolate", "cadetblue", "darkred", "blueviolet", "darkgreen", "darkmagenta", "darkorange", "goldenrod"].forEach(function(key) {
+    genColorKeywords[key] = colorKeywords[key];
+  });
 
   var colorCount = 0;
   for (var key in genColorKeywords) {
@@ -24,7 +19,7 @@ var mainPainterlyArc = function() {
   var margin = 20;
 
   canvas.width  = window.innerWidth;
-  var radius = Math.floor(canvas.width / 5);
+  var radius = Math.floor(canvas.width / 8);
   canvas.height = colorCount * (2*radius + 4*margin);
 
   var hexColorStr;
@@ -36,6 +31,7 @@ var mainPainterlyArc = function() {
   var arcNormal = function(x, y, radius, startAngle, endAngle, anticlockwise) {
     context.beginPath();
     context.arc(Math.floor(x), Math.floor(y), Math.floor(radius), startAngle, endAngle, anticlockwise);
+    context.closePath();
     context.stroke();
   };
 
@@ -58,13 +54,9 @@ var mainPainterlyArc = function() {
 
   var j=0;
   for (var kw in genColorKeywords) {
-    j += 1;
-    if (j > 100) {
-      break;
-    }
     hexColorStr = zeroPadToSix(genColorKeywords[kw].toString(16));
     context.strokeStyle = "#" + hexColorStr;
-    context.lineWidth = Math.floor(radius / 6);
+    context.lineWidth = Math.floor(radius / Math.PI);
     y += 2*margin + radius;
     //
     // draw arc with the original color
