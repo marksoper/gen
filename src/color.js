@@ -58,6 +58,11 @@ var GEN;
       return '#' + (this.b | (this.g << 8) | (this.r << 16)).toString(16);
     };
 
+    //
+    // TODO: Refactor this to convert back-forth to HSL
+    // Doesn't seem that RGB will work for this, results haven't been all that good
+    // especially for darker colors
+    //
     Color.prototype.getRandomShade = function (rangeCoeff) {
       rangeCoeff = rangeCoeff || 0.5;
       var seed = 2 * Math.random() - 1;
