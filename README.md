@@ -1,5 +1,5 @@
 
-# Javascript Library for Generative Art
+# Gen.js - Javascript Library for Generative Art
 
-[About gen.js]("http://blog.marksoper.net/gen" About gen.js)
+[About Gen.js]("http://blog.marksoper.net/gen" About Gen.js)
 
