@@ -1,5 +1,4 @@
 
-mydir=${0%/*}
-echo $mydir/../src/gen.ts
-tsc $mydir/../src/gen.ts --out $mydir/../build/gen.js
+dir=${0%/*}
+cat $dir/../src/gen.js $dir/../src/color.js > $dir/../build/gen.js
 
