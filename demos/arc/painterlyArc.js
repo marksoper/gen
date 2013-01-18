@@ -52,7 +52,6 @@ var mainPainterlyArc = function() {
     return s;
   };
 
-  var j=0;
   for (var kw in genColorKeywords) {
     hexColorStr = zeroPadToSix(genColorKeywords[kw].toString(16));
     context.strokeStyle = "#" + hexColorStr;
@@ -63,7 +62,7 @@ var mainPainterlyArc = function() {
     //
 
     arcNormal(mpxNormal, y, radius, 0, 2*Math.PI, false);
-    //drawText(kw + " #" + hexColorStr, x+4, y-2);
+    drawText(kw + " #" + hexColorStr, Math.floor(canvas.width / 2 - 50), y-2);
     
     //
     // draw arc with GEN.Arc.painterly
