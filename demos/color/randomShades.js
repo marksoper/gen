@@ -1,5 +1,5 @@
 
-var mainColorSandbox = function() {
+var mainRandomShades = function() {
 
   // constrain colors for debugging
   //genColorKeywords = {"salmon": 0xFA8072, "white": 0xffffff, "black": 0x000000, "sandybrown": 0xF4A460, "seagreen": 0x2E8B57};
@@ -70,4 +70,4 @@ var mainColorSandbox = function() {
 
 };
 
-window.onload = mainColorSandbox;
+window.onload = mainRandomShades;
