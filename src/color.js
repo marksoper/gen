@@ -13,6 +13,9 @@ var GEN;
 
   var Color = (function () {
 
+    //
+    // TODO: Constructor input param should support all supported formats for context.fillStyle
+    //
     function Color(val) {
       if(val instanceof Array) {
         this.r = bound(val[0]);
