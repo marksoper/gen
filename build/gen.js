@@ -77,6 +77,7 @@ var GEN;
     };
 
     Color.prototype.getRandomShade = function (rangeCoeff) {
+      rangeCoeff = rangeCoeff || 0.5;
       var seed = 2 * Math.random() - 1;
       var cNorm;
       var delta;
@@ -138,20 +139,23 @@ var GEN;
     };
 
     Arc.prototype.painterly = function(context, options) {
+      options = options || {};
       var originalLineWidth = context.lineWidth;
       var originalStrokeStyle = context.strokeStyle;
-      var reps = options.reps || 10;
+      var reps = options.reps || 48;
       var rootColor = new GEN.Color(context.strokeStyle);  // TODO: GEN.Color should support all possible values of context.strokeStyle
-      var color, mpVar, x, y, radius;
+      var color, mpVar, x, y, radius, startAngle, endAngle;
       for (var i=0; i<reps; i++) {
         context.strokeStyle = (rootColor.getRandomShade()).rgba();
-        context.lineWidth = Math.floor( Math.max(1, (originalLineWidth/4) * Math.random() ) );
-        radius = Math.floor ( this.radius * ( (originalLineWidth - context.lineWidth) * Math.random() - (originalLineWidth / 2 - context.lineWidth / 2) ) );
+        context.lineWidth = Math.floor( Math.max(1, (originalLineWidth/3 - originalLineWidth/8) * Math.random() + originalLineWidth/8 ) );
+        radius = Math.floor ( this.radius + ( (originalLineWidth - context.lineWidth) * Math.random() - (originalLineWidth / 2 - context.lineWidth / 2) ) );
         mpVar = (this.radius - radius) + (originalLineWidth - context.lineWidth);
-        x += Math.floor( mpvar * Math.random() - mpVar / 2 );
-        y += Math.floor( mpvar * Math.random() - mpVar / 2 );
+        x = this.x + Math.floor( mpVar * Math.random() - mpVar / 2 );
+        y = this.y + Math.floor( mpVar * Math.random() - mpVar / 2 );
         context.beginPath();
-        context.arc(x, y, radius, this.startAngle, this.endAngle, this.clockwise);
+        startAngle = 2*Math.PI * Math.random();
+        endAngle = startAngle - 2*Math.PI/4 * Math.random();
+        context.arc(x, y, radius, startAngle, endAngle, this.clockwise);
         context.stroke();
       }
       context.lineWidth = originalLineWidth;
@@ -162,7 +166,7 @@ var GEN;
 
   })();
 
-  GEN.Color = Color;
+  GEN.Arc = Arc;
 
 })(GEN || (GEN = {}));
 

@@ -59,6 +59,7 @@ var GEN;
     };
 
     Color.prototype.getRandomShade = function (rangeCoeff) {
+      rangeCoeff = rangeCoeff || 0.5;
       var seed = 2 * Math.random() - 1;
       var cNorm;
       var delta;
