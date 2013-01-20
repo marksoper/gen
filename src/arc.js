@@ -38,7 +38,7 @@ var GEN;
       var originalStrokeStyle = context.strokeStyle;
       var reps = options.reps || 72;
       var rootColor = new GEN.Color(context.strokeStyle);  // TODO: GEN.Color should support all possible values of context.strokeStyle
-      var color, mpVar, x, y, radius, startAngle, endAngle;
+      var mpVar, x, y, radius, startAngle, endAngle;
       for (var i=0; i<reps; i++) {
         context.strokeStyle = (rootColor.getRandomShade(0.8)).rgba();
         context.lineWidth = Math.floor( Math.max(1, (originalLineWidth/5 - originalLineWidth/8) * Math.random() + originalLineWidth/8 ) );

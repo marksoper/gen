@@ -63,8 +63,8 @@ var GEN;
     // Doesn't seem that RGB will work for this, results haven't been all that good
     // especially for darker colors
     //
-    Color.prototype.getRandomShade = function (rangeCoeff) {
-      rangeCoeff = rangeCoeff || 0.5;
+    Color.prototype.getRandomShade = function (shadeRange) {
+      shadeRange = shadeRange || 0.5;
       var seed = 2 * Math.random() - 1;
       var cNorm;
       var delta;
@@ -77,7 +77,7 @@ var GEN;
         "b"
       ].forEach(function (c) {
         cNorm = self[c] / 255;
-        delta = seed * rangeCoeff * Math.min(cNorm, 1 - cNorm);
+        delta = seed * shadeRange * Math.min(cNorm, 1 - cNorm);
         cNew = bound(255 * (cNorm + delta));
         rgb.push(cNew);
       });
