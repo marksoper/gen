@@ -28,9 +28,11 @@ var GEN;
       var color;
       for (var i=0; i<reps; i++) {
         context.StrokeStyle = (this.color.getRandomShade(0.8)).rgba();
-        context.lineWidth = Math.floor( Math.max(1, (originalLineWidth/5 - originalLineWidth/8) * Math.random() + originalLineWidth/8 ) );
-        radius = Math.floor ( this.radius + ( (originalLineWidth - context.lineWidth) * Math.random() - (originalLineWidth / 2 - context.lineWidth / 2) ) );
-        mpVar = (this.radius - radius) / 4 + (originalLineWidth - context.lineWidth) / 4;
+        context.lineWidth = Math.floor( Math.max(1, (this.lineWidth/5 - this.lineWidth/8) * Math.random() + this.lineWidth/8 ) );
+        
+
+        radius = Math.floor ( this.radius + ( (this.lineWidth - context.lineWidth) * Math.random() - (this.lineWidth / 2 - context.lineWidth / 2) ) );
+        mpVar = (this.radius - radius) / 4 + (this.lineWidth - context.lineWidth) / 4;
         x = this.x + Math.floor( mpVar * Math.random() - mpVar / 2 );
         y = this.y + Math.floor( mpVar * Math.random() - mpVar / 2 );
         context.beginPath();
@@ -42,7 +44,7 @@ var GEN;
         //context.closePath();
         context.Stroke();
       }
-      context.lineWidth = originalLineWidth;
+      context.lineWidth = this.lineWidth;
       context.StrokeStyle = originalStrokeStyle;
     };
 
