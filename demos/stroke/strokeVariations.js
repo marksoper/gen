@@ -23,7 +23,7 @@ var mainStrokeVariations = function() {
   var margin = 30;
 
   canvas.width  = window.innerWidth;
-  canvas.height = colorCount * 12 *margin;
+  canvas.height = colorCount * 24 *margin;
 
   var hexColorStr;
 
@@ -45,12 +45,12 @@ var mainStrokeVariations = function() {
   for (var kw in genColorKeywords) {
     hexColorStr = zeroPadToSix(genColorKeywords[kw].toString(16));
     context.strokeStyle = "#" + hexColorStr;
-    context.lineWidth = margin;
+    context.lineWidth = 25*margin;
     y += 2*margin;
     
     //drawText(kw + " #" + hexColorStr, Math.floor(canvas.width / 2 - 50), y-2);
     
-    var stroke = new GEN.Stroke(startX, y+10*margin, endX, y+margin, -Math.PI/2);
+    var stroke = new GEN.Stroke(startX, y+10*margin, endX, y+margin, -Math.PI/6);
     stroke.draw(context);
 
     y += 2*margin;
