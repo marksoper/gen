@@ -16,7 +16,7 @@ var GEN;
       this.startY = startY;
       this.endX = endX;
       this.endY = endY;
-      this.curvature = curvature;
+      this.curvature = curvature || Math.PI / 4;
       this.options = options || {};
     }
 
@@ -26,29 +26,26 @@ var GEN;
       this.color = this.options.color || new GEN.Color(context.strokeStyle);
       this.shadeRange = this.options.shadeRange || 0.5;
       context.lineCap = "round";
+      //
+      var length = Math.sqrt( Math.pow(this.endX - this.startX, 2) + Math.pow(this.endY - this.startY, 2) );
+      var theta = Math.atan( (this.endY - this.startY) / (this.endX - this.startX) );
+      var d = length * Math.cos(this.curvature) / 3;
+      this.cp1X = this.startX + (this.endX - this.startX)/3 + length * Math.sin(this.curvature) / 3;
+      this.cp1Y = this.startY + (this.endY - this.startY)/3 + length * Math.sin(this.curvature) / 3;
+      this.cp2X = this.endX - (this.endX - this.startX)/3 + length * Math.sin(this.curvature) / 3;
+      this.cp2Y = this.endY - (this.endY - this.startY)/3 + length * Math.sin(this.curvature) / 3;
       var color, radius;
-      for (var i=0; i<reps; i++) {
-        context.StrokeStyle = (this.color.getRandomShade(0.8)).rgba();
+      for (var i=0; i<this.reps; i++) {
+        context.strokeStyle = (this.color.getRandomShade(0.8)).rgba();
         context.lineWidth = Math.floor( Math.max(1, (this.lineWidth/5 - this.lineWidth/8) * Math.random() + this.lineWidth/8 ) );
-        radius = Math.sqrt( Math.pow( ( this.startX - this.endX ), 2 ) + Math.pow( ( this.startY - this.endY ), 2 ) ) / ( 2 * Math.sin( Math.PI * this.curvature / 2 ) );
-        
-
-
-        radius = Math.floor ( this.radius + ( (this.lineWidth - context.lineWidth) * Math.random() - (this.lineWidth / 2 - context.lineWidth / 2) ) );
-        mpVar = (this.radius - radius) / 4 + (this.lineWidth - context.lineWidth) / 4;
-        x = this.x + Math.floor( mpVar * Math.random() - mpVar / 2 );
-        y = this.y + Math.floor( mpVar * Math.random() - mpVar / 2 );
         context.beginPath();
-        startAngle = 2*Math.PI * Math.random();
-        endAngle = startAngle - Math.PI * Math.random();
-        //startAngle = 0;
-        //endAngle = 2*Math.PI;
-        context.Stroke(x, y, radius, startAngle, endAngle, this.clockwise);
-        //context.closePath();
-        context.Stroke();
+        context.moveTo(this.startX, this.startY);
+        // TODO: set control points based on curvature
+        context.bezierCurveTo(this.cp1X,this.cp1Y,this.cp2X,this.cp2Y,this.endX,this.endY);
+        context.stroke();
+        context.closePath();
       }
-      context.lineWidth = this.lineWidth;
-      context.StrokeStyle = originalStrokeStyle;
+      // TODO: reset original lineWidth and strokeStyle
     };
 
     return Stroke;

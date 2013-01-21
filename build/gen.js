@@ -76,8 +76,13 @@ var GEN;
       return '#' + (this.b | (this.g << 8) | (this.r << 16)).toString(16);
     };
 
-    Color.prototype.getRandomShade = function (rangeCoeff) {
-      rangeCoeff = rangeCoeff || 0.5;
+    //
+    // TODO: Refactor this to convert back-forth to HSL
+    // Doesn't seem that RGB will work for this, results haven't been all that good
+    // especially for darker colors
+    //
+    Color.prototype.getRandomShade = function (shadeRange) {
+      shadeRange = shadeRange || 0.5;
       var seed = 2 * Math.random() - 1;
       var cNorm;
       var delta;
@@ -90,7 +95,7 @@ var GEN;
         "b"
       ].forEach(function (c) {
         cNorm = self[c] / 255;
-        delta = seed * rangeCoeff * Math.min(cNorm, 1 - cNorm);
+        delta = seed * shadeRange * Math.min(cNorm, 1 - cNorm);
         cNew = bound(255 * (cNorm + delta));
         rgb.push(cNew);
       });
@@ -102,6 +107,64 @@ var GEN;
   })();
 
   GEN.Color = Color;
+
+})(GEN || (GEN = {}));
+
+
+//
+//  stoke.js - Stoke class
+//
+//  a brush Stroke from start to end
+//
+
+var GEN;
+
+(function (GEN) {
+
+  var Stroke = (function () {
+
+    function Stroke(startX, startY, endX, endY, curvature, options) {
+      this.startX = startX;
+      this.startY = startY;
+      this.endX = endX;
+      this.endY = endY;
+      this.curvature = curvature || Math.PI / 4;
+      this.options = options || {};
+    }
+
+    Stroke.prototype.draw = function(context) {
+      this.reps = this.options.reps || 16;
+      this.lineWidth = this.options.lineWidth || context.lineWidth;
+      this.color = this.options.color || new GEN.Color(context.strokeStyle);
+      this.shadeRange = this.options.shadeRange || 0.5;
+      context.lineCap = "round";
+      //
+      var length = Math.sqrt( Math.pow(this.endX - this.startX, 2) + Math.pow(this.endY - this.startY, 2) );
+      var theta = Math.atan( (this.endY - this.startY) / (this.endX - this.startX) );
+      var d = length * Math.cos(this.curvature) / 3;
+      this.cp1X = this.startX + (this.endX - this.startX)/3 + length * Math.sin(this.curvature) / 3;
+      this.cp1Y = this.startY + (this.endY - this.startY)/3 + length * Math.sin(this.curvature) / 3;
+      this.cp2X = this.endX - (this.endX - this.startX)/3 + length * Math.sin(this.curvature) / 3;
+      this.cp2Y = this.endY - (this.endY - this.startY)/3 + length * Math.sin(this.curvature) / 3;
+      var color, radius;
+      for (var i=0; i<this.reps; i++) {
+        context.strokeStyle = (this.color.getRandomShade(0.8)).rgba();
+        context.lineWidth = Math.floor( Math.max(1, (this.lineWidth/5 - this.lineWidth/8) * Math.random() + this.lineWidth/8 ) );
+        context.beginPath();
+        context.moveTo(this.startX, this.startY);
+        // TODO: set control points based on curvature
+        context.bezierCurveTo(this.cp1X,this.cp1Y,this.cp2X,this.cp2Y,this.endX,this.endY);
+        context.stroke();
+        context.closePath();
+      }
+      // TODO: reset original lineWidth and strokeStyle
+    };
+
+    return Stroke;
+
+  })();
+
+  GEN.Stroke = Stroke;
 
 })(GEN || (GEN = {}));
 
@@ -145,7 +208,7 @@ var GEN;
       var originalStrokeStyle = context.strokeStyle;
       var reps = options.reps || 72;
       var rootColor = new GEN.Color(context.strokeStyle);  // TODO: GEN.Color should support all possible values of context.strokeStyle
-      var color, mpVar, x, y, radius, startAngle, endAngle;
+      var mpVar, x, y, radius, startAngle, endAngle;
       for (var i=0; i<reps; i++) {
         context.strokeStyle = (rootColor.getRandomShade(0.8)).rgba();
         context.lineWidth = Math.floor( Math.max(1, (originalLineWidth/5 - originalLineWidth/8) * Math.random() + originalLineWidth/8 ) );
