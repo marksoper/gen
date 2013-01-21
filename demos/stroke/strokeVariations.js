@@ -1,21 +1,5 @@
 
 var mainStrokeVariations = function() {
-  
-  // filter genColorKeywords
-  var colorKeywords = genColorKeywords;
-  genColorKeywords = {
-    "chocolate": colorKeywords["chocolate"]
-  };
-  /*
-  ["chocolate", "cadetblue", "darkred", "blueviolet", "darkgreen", "darkmagenta", "darkorange", "goldenrod"].forEach(function(key) {
-    genColorKeywords[key] = colorKeywords[key];
-  });
-  */
-
-  var colorCount = 0;
-  for (var key in genColorKeywords) {
-    colorCount += 1;
-  }
 
   var canvas = document.getElementById('canvas');
   var context = canvas.getContext('2d');
@@ -23,12 +7,9 @@ var mainStrokeVariations = function() {
   var margin = 30;
 
   canvas.width  = window.innerWidth;
-  canvas.height = colorCount * 24 *margin;
 
   var hexColorStr;
 
-  var startX = margin*5;
-  var endX = margin*15;
   var y=0;
 
   context.font = "10pt Helvetica";
@@ -42,18 +23,45 @@ var mainStrokeVariations = function() {
     return s;
   };
 
-  for (var kw in genColorKeywords) {
-    hexColorStr = zeroPadToSix(genColorKeywords[kw].toString(16));
+  var variations = [
+    {
+      startX: 150,
+      startY: 100,
+      endX: 450,
+      endY: 10,
+      curvature: -Math.PI / 6,
+      lineWidth: 72,
+      color: genColorKeywords["chocolate"]
+    },
+    {
+      startX: 600,
+      startY: 100,
+      endX: 100,
+      endY: 10,
+      curvature: -Math.PI / 6,
+      lineWidth: 72,
+      color: genColorKeywords["cadetblue"]
+    }
+  ];
+
+  for (var vj in variations) {
+    canvas.height += (Math.abs(variations[vj].startY - variations[vj].endY) + 2*margin);
+  }
+
+  var v;
+  for (var vi in variations) {
+    v = variations[vi];
+    hexColorStr = zeroPadToSix(v.color.toString(16));
     context.strokeStyle = "#" + hexColorStr;
-    context.lineWidth = 25*margin;
-    y += 2*margin;
+    context.lineWidth = v.lineWidth;
+    y += margin;
     
     //drawText(kw + " #" + hexColorStr, Math.floor(canvas.width / 2 - 50), y-2);
     
-    var stroke = new GEN.Stroke(startX, y+10*margin, endX, y+margin, -Math.PI/6);
+    var stroke = new GEN.Stroke(v.startX, y + v.startY, v.endX, y + v.endY, v.curvature);
     stroke.draw(context);
 
-    y += 2*margin;
+    y += (Math.abs(v.startY - v.endY) + 4*margin);
   }
 
   // for debugging

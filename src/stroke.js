@@ -50,7 +50,7 @@ var GEN;
         cp2X = Math.floor(this.cp2X + Math.random() * length * cpSkew - length * cpSkew / 2);
         cp2Y = Math.floor(this.cp2Y + Math.random() * length * cpSkew - length * cpSkew / 2);
         context.strokeStyle = (this.color.getRandomShade(0.8)).rgba();
-        context.lineWidth = Math.floor( Math.max(1, (this.lineWidth/128 - this.lineWidth/256) * Math.random() + this.lineWidth/256 ) );
+        context.lineWidth = Math.floor( Math.max(1, (this.lineWidth/12 - this.lineWidth/24) * Math.random() + this.lineWidth/24 ) );
         context.beginPath();
         context.moveTo(startX, startY);
         // TODO: set control points based on curvature
