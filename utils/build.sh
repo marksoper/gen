@@ -7,3 +7,4 @@ find demos -name "*.html" -type f -exec sed -i.bak 's|<\/head>|<script type="tex
 git add -A
 git commit -m 'publish latest demos from master branch'
 git push origin gh-pages
+find demos -name "*.html.bak" -type f -exec rm {} \;
