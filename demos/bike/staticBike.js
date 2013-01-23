@@ -6,14 +6,8 @@ var mainBike = function() {
 
   var margin = 30;
 
-  var resizeCanvas = function(canvas) {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-  };
-
-  var clearContext = function(context) {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-  };
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
 
   var zeroPadToSix = function(s) {
     while (s.length < 6) s = "0" + s;
@@ -86,47 +80,6 @@ var mainBike = function() {
       lineWidth:  480
     }
   };
-  var part;
-  for (var partName in parts) {
-    part = parts[partName];
-    part.draw = function(context) {
-      hexColorStr = zeroPadToSix(part.color.toString(16));
-      context.strokeStyle = "#" + hexColorStr;
-      context.lineWidth = part.lineWidth;
-      part.shape.draw(context);
-    };
-  }
-
-  var layers = {
-    "wheels": {
-      parts: ["frontWheel", "rearWheel"],
-      interval: 200
-    },
-    "ground": {
-      parts: ["ground"],
-      interval: 500
-    },
-    "body": {
-      parts: ["torso", "upperLeg", "lowerLeg", "foot", "upperArm", "lowerArm", "head_0", "head_1", "head_2"],
-      interval: 2000
-    }
-  };
-  var layer;
-  var drawLayer = function(layer) {
-    layer.parts.forEach(function(part) {
-      parts[part].draw(layer.context);
-    });
-  };
-  for (var layerName in layers) {
-    layer = layers[layerName];
-    layer.canvas = document.createElement("canvas");
-    layer.context = layer.canvas.getContext("2d");
-    setTimeout(function() {
-      drawLayer(layer);
-    }, layer.interval);
-  }
-
-
 
   var part;
   for (var partName in parts) {
