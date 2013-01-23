@@ -75,7 +75,7 @@ var mainBike = function() {
       lineWidth: 210
     },
     "ground": {
-      shape: new GEN.Stroke(0, 690, canvas.width, 710, -Math.PI/9),
+      shape: new GEN.Stroke(0, 680, canvas.width, 710, -Math.PI/9),
       color: groundColor,
       lineWidth:  480
     }
