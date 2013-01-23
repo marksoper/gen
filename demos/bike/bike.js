@@ -57,6 +57,21 @@ var mainBike = function() {
       shape: new GEN.Stroke(440, 230, 540, 220, -Math.PI/12),
       color: bodyColor,
       lineWidth: 210
+    },
+    "head_0": {
+      shape: new GEN.Stroke(560, 90, 420, 70, Math.PI/3),
+      color: bodyColor,
+      lineWidth: 210
+    },
+    "head_1": {
+      shape: new GEN.Stroke(580, 70, 420, 70, -Math.PI/3),
+      color: bodyColor,
+      lineWidth: 210
+    },
+    "head_2": {
+      shape: new GEN.Stroke(590, 60, 420, 70, -Math.PI/3),
+      color: bodyColor,
+      lineWidth: 210
     }
   };
 
