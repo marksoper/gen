@@ -1,6 +1,6 @@
 
 //
-//  stoke.js - Stoke class
+//  stroke.js - Stroke class
 //
 //  a brush Stroke from start to end
 //
