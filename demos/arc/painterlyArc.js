@@ -36,9 +36,8 @@ var mainPainterlyArc = function() {
   };
 
   var arcPainterly = function(x, y, radius, startAngle, endAngle, anticlockwise) {
-    console.log("painterly for " + context.strokeStyle);
     var arc = new GEN.Arc(Math.floor(x), Math.floor(y), Math.floor(radius), startAngle, endAngle, anticlockwise);
-    arc.painterly(context);
+    arc.draw(context);
   };
 
   context.font = "10pt Helvetica";

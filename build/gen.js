@@ -203,18 +203,9 @@ var GEN;
       this.startAngle = startAngle;
       this.endAngle = endAngle;
       this.anticlockwise = anticlockwise;
-      this.setDrawStyle();
     }
 
-    Arc.prototype.setDrawStyle = function(drawStyle) {
-      this.drawStyle = drawStyle || "painterly";
-    };
-
     Arc.prototype.draw = function(context, options) {
-      this[drawStyle](context, options);
-    };
-
-    Arc.prototype.painterly = function(context, options) {
       options = options || {};
       context.lineCap = "round";
       var originalLineWidth = context.lineWidth;
