@@ -16,6 +16,7 @@ var mainBike = function() {
 
   var wheelColor = genColorKeywords["chocolate"];
   var bodyColor = genColorKeywords["chocolate"];
+  var groundColor = genColorKeywords["darkslategrey"];
 
   var parts = {
     "frontWheel": {
@@ -28,25 +29,25 @@ var mainBike = function() {
       color: wheelColor,
       lineWidth: 64
     },
-    "foot": {
-      shape: new GEN.Stroke(340, 400, 460, 400, -Math.PI/12),
+    "torso": {
+      shape: new GEN.Stroke(260, 200, 500, 150, -Math.PI/6),
       color: bodyColor,
-      lineWidth: 128
-    },
-    "lowerLeg": {
-      shape: new GEN.Stroke(340, 400, 460, 300, Math.PI/12),
-      color: bodyColor,
-      lineWidth: 230
+      lineWidth: 640
     },
     "upperLeg": {
       shape: new GEN.Stroke(460, 300, 260, 200, Math.PI/12),
       color: bodyColor,
       lineWidth: 480
     },
-    "torso": {
-      shape: new GEN.Stroke(260, 200, 500, 150, -Math.PI/6),
+    "lowerLeg": {
+      shape: new GEN.Stroke(340, 400, 460, 300, Math.PI/12),
       color: bodyColor,
-      lineWidth: 640
+      lineWidth: 230
+    },
+    "foot": {
+      shape: new GEN.Stroke(340, 400, 460, 400, -Math.PI/12),
+      color: bodyColor,
+      lineWidth: 128
     },
     "upperArm": {
       shape: new GEN.Stroke(500, 150, 440, 230, -Math.PI/6),
@@ -72,6 +73,11 @@ var mainBike = function() {
       shape: new GEN.Stroke(590, 60, 420, 70, -Math.PI/3),
       color: bodyColor,
       lineWidth: 210
+    },
+    "ground": {
+      shape: new GEN.Stroke(0, 690, canvas.width, 710, -Math.PI/9),
+      color: groundColor,
+      lineWidth:  480
     }
   };
 
@@ -81,6 +87,7 @@ var mainBike = function() {
     hexColorStr = zeroPadToSix(part.color.toString(16));
     context.strokeStyle = "#" + hexColorStr;
     context.lineWidth = part.lineWidth;
+    console.log("drawing: " + partName);
     part.shape.draw(context);
   }
 
