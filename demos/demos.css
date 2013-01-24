@@ -1,12 +1,14 @@
 
 
 body {
-  margin:10px;
+  margin:0;
+  padding:0;
   text-align: center;
 }
 
 div {
-
+  margin:0;
+  padding:0;
 }
 
 div#scene {
