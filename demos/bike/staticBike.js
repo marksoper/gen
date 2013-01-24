@@ -9,6 +9,11 @@ var mainBike = function() {
   canvas.width  = window.innerWidth;
   canvas.height = window.innerHeight;
 
+  var wC = canvas.width;
+  var hC = canvas.height;
+  var wN = 1024;
+  var hN = 800;
+
   var zeroPadToSix = function(s) {
     while (s.length < 6) s = "0" + s;
     return s;
@@ -20,12 +25,12 @@ var mainBike = function() {
 
   var parts = {
     "frontWheel": {
-      shape: new GEN.Arc(600, 400, 120, 0, Math.PI * 2),
+      shape: new GEN.Arc((wC/wN)*600, (hC/hN)*400, (wC/wN)*120, (hC/hN)*0, Math.PI * 2),
       color: wheelColor,
       lineWidth: 64
     },
     "rearWheel": {
-      shape: new GEN.Arc(200, 400, 120, 0, Math.PI * 2),
+      shape: new GEN.Arc((wC/wN)*200, (hC/hN)*400, (wC/wN)*120, (hC/hN)*0, Math.PI * 2),
       color: wheelColor,
       lineWidth: 64
     },
@@ -90,6 +95,18 @@ var mainBike = function() {
     console.log("drawing: " + partName);
     part.shape.draw(context);
   }
+
+  var canvasResizing;
+  window.addEventListener("resize", function() {
+    if (canvasResizing) {
+      console.log("window resize event ignored");
+      return;
+    }
+    console.log("window resize event NOT ignored");
+    canvasResizing = true;
+    mainBike();
+    canvasResizing = false;
+  });
 
   // for debugging
   window.context = context;
