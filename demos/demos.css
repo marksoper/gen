@@ -6,6 +6,10 @@ body {
 }
 
 div {
-  overflow:hidden;
+
+}
+
+div#scene {
+  clear:both;
 }
 

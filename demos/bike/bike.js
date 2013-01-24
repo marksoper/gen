@@ -1,9 +1,6 @@
 
 var mainBike = function() {
 
-  var canvas = document.getElementById('canvas');
-  var context = canvas.getContext('2d');
-
   var margin = 30;
 
   var resizeCanvas = function(canvas) {
@@ -81,26 +78,22 @@ var mainBike = function() {
       lineWidth: 210
     },
     "ground": {
-      shape: new GEN.Stroke(0, 680, canvas.width, 710, -Math.PI/9),
+      shape: new GEN.Stroke(window.innerWidth, 710, 0, 680, -Math.PI/9),
       color: groundColor,
       lineWidth:  480
     }
   };
-  var part;
-  for (var partName in parts) {
-    part = parts[partName];
-    part.draw = function(context) {
-      hexColorStr = zeroPadToSix(part.color.toString(16));
-      context.strokeStyle = "#" + hexColorStr;
-      context.lineWidth = part.lineWidth;
-      part.shape.draw(context);
-    };
-  }
+  var drawPart = function(part, context) {
+    hexColorStr = zeroPadToSix(part.color.toString(16));
+    context.strokeStyle = "#" + hexColorStr;
+    context.lineWidth = part.lineWidth;
+    part.shape.draw(context);
+  };
 
   var layers = {
     "wheels": {
       parts: ["frontWheel", "rearWheel"],
-      interval: 200
+      interval: 250
     },
     "ground": {
       parts: ["ground"],
@@ -108,38 +101,33 @@ var mainBike = function() {
     },
     "body": {
       parts: ["torso", "upperLeg", "lowerLeg", "foot", "upperArm", "lowerArm", "head_0", "head_1", "head_2"],
-      interval: 2000
+      interval: 5000
     }
   };
   var layer;
   var drawLayer = function(layer) {
-    layer.parts.forEach(function(part) {
-      parts[part].draw(layer.context);
+    layer.parts.forEach(function(partName) {
+      drawPart(parts[partName], layer.context);
     });
+    setTimeout(function() {
+      window.requestAnimationFrame(function() {
+        clearContext(layer.context);
+        drawLayer(layer);
+      });
+    }, layer.interval);
   };
   for (var layerName in layers) {
     layer = layers[layerName];
     layer.canvas = document.createElement("canvas");
     layer.context = layer.canvas.getContext("2d");
-    setTimeout(function() {
-      drawLayer(layer);
-    }, layer.interval);
-  }
-
-
-
-  var part;
-  for (var partName in parts) {
-    part = parts[partName];
-    hexColorStr = zeroPadToSix(part.color.toString(16));
-    context.strokeStyle = "#" + hexColorStr;
-    context.lineWidth = part.lineWidth;
-    console.log("drawing: " + partName);
-    part.shape.draw(context);
+    document.getElementById("scene").appendChild(layer.canvas);
+    resizeCanvas(layer.canvas);
+    drawLayer(layer);
   }
 
   // for debugging
-  window.context = context;
+  window.parts = parts;
+  window.layers = layers;
 
 };
 
