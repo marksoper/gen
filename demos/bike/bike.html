@@ -3,25 +3,27 @@
 <html>
 
   <head>
-    <title>Gen.js Bike Demo</title>
+    <title>Gen.js Animated Bike Demo</title>
     <link rel="stylesheet" href="../demos.css">
+    <link rel="stylesheet" href="bike.css">
     <script src="../../build/gen.js"></script>
+    <script src="../lib/animationFramePolyfill.js"></script>
     <script src="../lib/colorKeywords.js"></script>
     <script src="bike.js"></script>
   <script type="text/javascript" src="/media/js/ga.js"></script></head>
 
   <body>
-    <div>
+    <div id="container">
       <div id="header">
-        <h1>Gen.js Bike Demo</h1>
+        <h1>Gen.js Animated Bike Demo</h1>
           <p>
             <em>
-              Example of using Gen.js to create a bike using <a href="https://github.com/marksoper/gen/blob/master/src/stroke.js">GEN.Stroke.prototype.draw()</a> and <a href="https://github.com/marksoper/gen/blob/master/src/arc.js">GEN.Arc.prototype.draw()</a>
+              Example of using Gen.js to create an animated bike using <a href="https://github.com/marksoper/gen/blob/master/src/stroke.js">GEN.Stroke.prototype.draw()</a> and <a href="https://github.com/marksoper/gen/blob/master/src/arc.js">GEN.Arc.prototype.draw()</a>
             </em>
           </p>
       </div>
-      <canvas id="canvas">
-      </canvas>
+      <div id="scene">
+      </div>
     </div>
   </body>
 

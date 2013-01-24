@@ -1,13 +1,16 @@
 
 var mainBike = function() {
 
-  var canvas = document.getElementById('canvas');
-  var context = canvas.getContext('2d');
-
   var margin = 30;
 
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
+  var resizeCanvas = function(canvas) {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  };
+
+  var clearContext = function(context) {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+  };
 
   var zeroPadToSix = function(s) {
     while (s.length < 6) s = "0" + s;
@@ -75,24 +78,56 @@ var mainBike = function() {
       lineWidth: 210
     },
     "ground": {
-      shape: new GEN.Stroke(0, 680, canvas.width, 710, -Math.PI/9),
+      shape: new GEN.Stroke(window.innerWidth, 710, 0, 680, -Math.PI/9),
       color: groundColor,
       lineWidth:  480
     }
   };
-
-  var part;
-  for (var partName in parts) {
-    part = parts[partName];
+  var drawPart = function(part, context) {
     hexColorStr = zeroPadToSix(part.color.toString(16));
     context.strokeStyle = "#" + hexColorStr;
     context.lineWidth = part.lineWidth;
-    console.log("drawing: " + partName);
     part.shape.draw(context);
+  };
+
+  var layers = {
+    "wheels": {
+      parts: ["frontWheel", "rearWheel"],
+      interval: 250
+    },
+    "ground": {
+      parts: ["ground"],
+      interval: 500
+    },
+    "body": {
+      parts: ["torso", "upperLeg", "lowerLeg", "foot", "upperArm", "lowerArm", "head_0", "head_1", "head_2"],
+      interval: 5000
+    }
+  };
+  var layer;
+  var drawLayer = function(layer) {
+    layer.parts.forEach(function(partName) {
+      drawPart(parts[partName], layer.context);
+    });
+    setTimeout(function() {
+      window.requestAnimationFrame(function() {
+        clearContext(layer.context);
+        drawLayer(layer);
+      });
+    }, layer.interval);
+  };
+  for (var layerName in layers) {
+    layer = layers[layerName];
+    layer.canvas = document.createElement("canvas");
+    layer.context = layer.canvas.getContext("2d");
+    document.getElementById("scene").appendChild(layer.canvas);
+    resizeCanvas(layer.canvas);
+    drawLayer(layer);
   }
 
   // for debugging
-  window.context = context;
+  window.parts = parts;
+  window.layers = layers;
 
 };
 
