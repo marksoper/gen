@@ -1,11 +1,5 @@
 
 //
-//  Gen.js - Javascript Library for Generative Art
-//  http://marksoper.github.com/gen
-//  author: Mark Soper (http://soper.me)
-//
-
-//
 //  painterly.js - defines a "painterly" context
 //  that wraps the normal canvas "2d" context
 //
