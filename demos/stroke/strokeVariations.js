@@ -10,7 +10,7 @@ var mainStrokeVariations = function() {
 
   var hexColorStr;
 
-  var y=0;
+  var y=document.getElementById("header").offsetHeight + 2*margin;
 
   context.font = "10pt Helvetica";
   var drawText = function(text, x, y, fillStyle) {
@@ -45,7 +45,7 @@ var mainStrokeVariations = function() {
   ];
 
   for (var vj in variations) {
-    canvas.height += (Math.abs(variations[vj].startY - variations[vj].endY) + 2*margin);
+    canvas.height += (Math.abs(variations[vj].startY - variations[vj].endY) + 5*margin);
   }
 
   var v;

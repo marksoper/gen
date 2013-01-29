@@ -21,7 +21,7 @@ var mainRandomShades = function() {
   var hexColorStr;
   var color;
   var shade;
-  var y=0;
+  var y=document.getElementById("header").offsetHeight + 2*margin;
   var x=0;
 
   var drawRect = function(x,y,width,height,fillStyle) {

@@ -5,19 +5,6 @@ var mainBezierPerformance = function() {
   var context = canvas.getContext('2d');
   var painterly = new GEN.Painterly(context);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   var margin = 30;
 
   canvas.width  = window.innerWidth;
@@ -83,4 +70,4 @@ var mainBezierPerformance = function() {
 
 };
 
-window.onload = mainStrokeVariations;
+window.addEventListener("load", mainBezierPerformance);

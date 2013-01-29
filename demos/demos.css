@@ -5,6 +5,7 @@ body {
   padding:0;
   text-align: center;
   font-size:16pt;
+  position: relative;
 }
 
 div {
@@ -21,11 +22,17 @@ p {
   padding:0;
 }
 
-div#header {
+#header {
   margin:10px 0 10px 0;
 }
 
-div#scene {
+#scene {
   clear:both;
+}
+
+canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
