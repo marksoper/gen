@@ -11,6 +11,7 @@ var mainBezierPerformance = function() {
     canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
   };
+  resizeCanvas();
 
   var hexColorStr;
 
@@ -19,8 +20,8 @@ var mainBezierPerformance = function() {
   painterly.moveTo(100,100);
   painterly.beginPath();
   painterly.strokeStyle = "#ff69b4";  // hotpink
-  painterly.lineWidth = 32;
-  painterly.bezierCurveTo(200,150,300,350,400,400);
+  painterly.lineWidth = 12;
+  painterly.bezierCurveTo(200,150,600,350,800,400);
   painterly.context.stroke();
 
   window.painterly = painterly;
@@ -28,3 +29,4 @@ var mainBezierPerformance = function() {
 };
 
 window.addEventListener("load", mainBezierPerformance);
+
