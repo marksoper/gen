@@ -18,6 +18,26 @@ var GEN;
 })(GEN || (GEN = {}));
 
 //
+//  random.js - random number generator
+//
+
+var GEN;
+
+(function (GEN) {
+
+  var random = function(min, max) {
+    if (min && max) {
+      return (max - min) * Math.random() + min;
+    }
+    return Math.random();
+  };
+
+  GEN.random = random;
+
+})(GEN || (GEN = {}));
+
+
+//
 //  color.js - Color class
 //
 
@@ -112,7 +132,124 @@ var GEN;
 
 
 //
-//  stoke.js - Stoke class
+//  painterly.js - defines a "painterly" context
+//  that wraps the normal canvas "2d" context
+//
+
+var GEN;
+
+(function (GEN) {
+
+  var Painterly = (function (context) {
+
+    function Painterly(context) {
+      this.context = context;
+    }
+
+    Painterly.prototype.set = function(props) {
+      for (var propName in props) {
+        this.context[propName] = props[prop];
+      }
+    };
+
+    Painterly.prototype.get = function(propName) {
+      return this.context[propName];
+    };
+
+    Painterly.prototype.currentPosition = function(coords) {
+      if (coords) {
+        this._currentPosition = coords;
+      } else {
+        return this._currentPosition || { x: 0, y: 0};
+      }
+    };
+
+    Painterly.prototype.execute = function() {
+      var args = Array.prototype.slice(arguments);
+      var method = args.splice(0,1);
+      var pos;
+      switch (method) {
+        case "bezierCurveTo":
+          pos = {x: args[4], y: args[5]};
+          break;
+        case "moveTo":
+          pos = {x: args[0], y: args[1]};
+          break;
+      }
+      this.context[method].apply(this.context, args);
+      this.currentPosition(pos);
+    };
+
+    return Painterly;
+
+  })();
+
+  GEN.Painterly = Painterly;
+  
+})(GEN || (GEN = {}));
+
+//
+//  painterly/bezier.js
+// 
+//  extends the Painterly class to have
+//  bezierCurveTo prototype method
+//
+
+var GEN;
+
+(function (GEN) {
+
+  var bezierCurveTo = function(cp1x, cp1y, cp2x, cp2y, x, y) {
+    var oSP = this.currentPosition();
+    var oLW = this.get("lineWidth");
+    var length = Math.sqrt( Math.pow(x - oSP.x, 2) + Math.pow(y - oSP.y, 2) );
+    var reps = 30;
+    var minLW = 0.1 * oLW;
+    var maxLW = 0.4 * oLW;
+    var pVar = 0.1 * length;
+    var cpVar = 0.1 * length;
+    var params = {};
+    for (var i=0; i<reps; i++) {
+      this.execute(
+        "moveTo",
+        oSP.x + pVar * GEN.random() - pVar/2,
+        oSP.y + pVar * GEN.random() - pVar/2
+      );
+      this.set({
+        "lineWidth": (maxLW - minLW) * GEN.random() + minLW
+      });
+      params.cp1x = cp1x + GEN.random() * cpVariance - cpVariance / 2;
+      params.cp1y = cp1y + GEN.random() * cpVariance - cpVariance / 2;
+      params.cp2x = cp2x + GEN.random() * cpVariance - cpVariance / 2;
+      params.cp2y = cp2y + GEN.random() * cpVariance - cpVariance / 2;
+      params.x = cp1x + GEN.random() * cpVariance - cpVariance / 2;
+      params.y = cp1y + GEN.random() * cpVariance - cpVariance / 2;
+      this.execute(
+        "bezierCurveTo",
+        params.cp1x,
+        params.cp1y,
+        params.cp2x,
+        params.cp2y,
+        params.x,
+        params.y
+      );
+    }
+    this.set({
+      lineWidth: oLW
+    });
+    this.execute(
+      "moveTo",
+      x,
+      y
+    );
+  };
+
+  GEN.Painterly.prototype.bezierCurveTo = bezierCurveTo;
+
+})(GEN || (GEN = {}));
+
+//
+//  stroke.js - Stroke class
 //
 //  a brush Stroke from start to end
 //
