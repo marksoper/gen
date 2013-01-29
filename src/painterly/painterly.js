@@ -14,13 +14,13 @@ var GEN;
       this.context = context;
     }
 
-    Painterly.prototype.set = function(props) {
+    Painterly.prototype.contextSet = function(props) {
       for (var propName in props) {
-        this.context[propName] = props[prop];
+        this.context[propName] = props[propName];
       }
     };
 
-    Painterly.prototype.get = function(propName) {
+    Painterly.prototype.contextGet = function(propName) {
       return this.context[propName];
     };
 
@@ -32,8 +32,8 @@ var GEN;
       }
     };
 
-    Painterly.prototype.execute = function() {
-      var args = Array.prototype.slice(arguments);
+    Painterly.prototype.contextCall = function() {
+      var args = Array.prototype.slice.call(arguments);
       var method = args.splice(0,1);
       var pos;
       switch (method) {
@@ -46,6 +46,15 @@ var GEN;
       }
       this.context[method].apply(this.context, args);
       this.currentPosition(pos);
+    };
+
+    Painterly.prototype.moveTo = function(x,y) {
+      this.context.moveTo(x,y);
+      this.currentPosition({x: x, y: y});
+    };
+
+    Painterly.prototype.beginPath = function() {
+      this.context.beginPath();
     };
 
     return Painterly;
