@@ -2,7 +2,7 @@
 //
 //  Gen.js - Javascript Library for Generative Art
 //  http://marksoper.github.com/gen
-//  author: Mark Soper (http://marksoper.net)
+//  author: Mark Soper (http://soper.me)
 //
 
 //
