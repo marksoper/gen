@@ -2,8 +2,8 @@
 var mainBezierPerformance = function() {
 
   var canvas = document.getElementById('canvas');
-  var context = canvas.getContext('2d');
-  var painterly = new GEN.Painterly(context);
+  var context2d = canvas.getContext('2d');
+  var painterly = new GEN.Painterly.Context(context2d);
 
   var margin = 30;
 
@@ -22,7 +22,7 @@ var mainBezierPerformance = function() {
   painterly.strokeStyle = "#ff69b4";  // hotpink
   painterly.lineWidth = 12;
   painterly.bezierCurveTo(200,150,600,350,800,400);
-  painterly.context.stroke();
+  painterly.stroke();
 
   window.painterly = painterly;
 

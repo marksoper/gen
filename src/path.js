@@ -5,7 +5,7 @@
 //  which is a collection of Gen.Subpath objects
 //  Gen.Path has methods analogous to the Context2d path operations
 //  e.g. beginPath, stroke, etc.
-//  
+//
 
 var GEN;
 
@@ -20,6 +20,10 @@ var GEN;
 
     Path.prototype.begin = function() {
       this.subpaths = [];
+    };
+
+    Path.prototype.addSubpath = function(subpath) {
+      this.subpaths.push(subpath);
     };
 
     Path.prototype.stroke = function() {

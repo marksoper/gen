@@ -17,6 +17,26 @@ var GEN;
   
 })(GEN || (GEN = {}));
 
+//
+//  extends.js - defines a helper function GEN.__extends
+//  that gets used for class inheritance
+//
+
+var GEN;
+
+(function (GEN) {
+
+  var __extends = function (d, b) {
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+  };
+
+  GEN.__extends = __extends;
+  
+})(GEN || (GEN = {}));
+
+
 
 //
 //  fiber.js - defines a class Gen.Fiber
@@ -31,10 +51,12 @@ var GEN;
 
 (function (GEN) {
 
-  var Fiber = (function (context2d) {
+  var Fiber = (function () {
 
-    function Fiber(context2d) {
+    function Fiber(context2d, params, env, startPosition) {
       this.context2d = context2d;
+      this.params = params;
+      this.env = env;
     }
 
     Fiber.prototype.context2dSet = function(props) {
@@ -47,6 +69,17 @@ var GEN;
       return this.context2d[propName];
     };
 
+    Fiber.prototype.context2dMoveTo = function(x,y) {
+      this.context2d.moveTo(x,y);
+    };
+
+    Fiber.prototype.context2dStroke = function() {
+      this.context2d.stroke();
+    };
+
+    /*
+    * TODO: not sure what base draw functionality should be yet
+    *
     Fiber.prototype.draw = function(fiberDrawType, fiberDrawParams, initialPosition) {
       this.context2d.beginPath();
       if (fiberDrawType === "drawRect") {
@@ -57,6 +90,9 @@ var GEN;
       }
       this.context2d.stroke();
     };
+    *
+    *
+    */
 
     return Fiber;
 
@@ -72,18 +108,32 @@ var GEN;
 //  subpath.js - defines a class Gen.Subpath
 //  which is a collection of one or more Gen.Fiber objects
 //  many Gen.Subpath objects (lines, curves, arcs, etc.) are combined to produce a Gen.Context.Path object
-//  
+//
 
 var GEN;
 
 (function (GEN) {
 
-  var Subpath = (function (context2d, fibers) {
+  var Subpath = (function () {
 
-    function Subpath(context2d, fibers) {
+    //
+    // needs to be called with all args for now
+    // TODO: figure out a better multi-ariety parameterization
+    //
+    function Subpath(context2d, params, env, color, startPosition) {
       this.context2d = context2d;
-      this.fibers = fibers || [];
+      this.params = params || [];
+      this.env = env || {};
+      this.color = color || new GEN.Color(env.strokeStyle);
+      this.startPosition = startPosition || {x: 0, y: 0};
+      this.lineWidth = env.lineWidth || this.defaultLineWidth || Subpath.defaultLineWidth;  // TODO: test this
+      this.lineCap = env.lineCap || this.defaultLineCap || Subpath.defaultLineCap;
+      this.begin();
     }
+
+    Subpath.prototype.addFiber = function(fiber) {
+      this.fibers.push(fiber);
+    };
 
     Subpath.prototype.draw = function() {
       this.fibers.forEach(function(fiber) {
@@ -91,9 +141,22 @@ var GEN;
       });
     };
 
+    Subpath.prototype.to = function() {
+      this.begin();
+    };
+
+    Subpath.prototype.begin = function() {
+      this.fibers = [];
+    };
+
+    Subpath.defaultLineWidth = 10;
+    Subpath.defaultLineCap = "round";
+
     return Subpath;
 
   })();
+
+
 
   GEN.Subpath = Subpath;
   
@@ -106,18 +169,26 @@ var GEN;
 //  which is a collection of Gen.Subpath objects
 //  Gen.Path has methods analogous to the Context2d path operations
 //  e.g. beginPath, stroke, etc.
-//  
+//
 
 var GEN;
 
 (function (GEN) {
 
-  var Path = (function (context2d, subpaths) {
+  var Path = (function () {
 
     function Path(context2d, subpaths) {
       this.context2d = context2d;
       this.subpaths = subpaths || [];
     }
+
+    Path.prototype.begin = function() {
+      this.subpaths = [];
+    };
+
+    Path.prototype.addSubpath = function(subpath) {
+      this.subpaths.push(subpath);
+    };
 
     Path.prototype.stroke = function() {
       this.subpaths.forEach(function(subpath) {
@@ -133,6 +204,69 @@ var GEN;
   
 })(GEN || (GEN = {}));
 
+
+//
+//  context.js - defines a class Gen.Context
+//  that wraps Context2d - the normal canvas "2d" context ()
+//
+//
+//  TODO: more explanation
+//
+
+var GEN;
+
+(function (GEN) {
+
+  var Context = (function () {
+
+    function Context(context2d) {
+      this.context2d = context2d;
+      this._currentPosition = {x: 0, y: 0};
+      this._path = new GEN.Path(context2d);
+    }
+
+    //
+    // currentPosition gets and sets state about the current
+    // position of the "wrapped" context
+    //
+
+    Context.prototype.currentPosition = function(coords) {
+      if (coords) {
+        this._currentPosition = coords;
+      } else {
+        return this._currentPosition || { x: 0, y: 0};
+      }
+    };
+
+    //
+    //  GEN.Context versions of native Context2d operations
+    //
+
+    Context.prototype.moveTo = function(x,y) {
+      this.context2d.moveTo(x,y);
+      this.currentPosition({x: x, y: y});
+    };
+
+    Context.prototype.beginPath = function() {
+      this._path.begin();
+    };
+
+    Context.prototype.addToPath = function(subpath) {
+      this._path.addSubpath(subpath);
+    };
+
+    Context.prototype.stroke = function() {
+      // TODO: should probably take an optional path arg
+      this._path.stroke();
+    };
+
+    return Context;
+
+  })();
+
+  GEN.Context = Context;
+  
+})(GEN || (GEN = {}));
 
 //
 //  random.js - random number generator
@@ -177,12 +311,14 @@ var GEN;
         this.g = bound(val[1]);
         this.b = bound(val[2]);
         this.a = bound(val[3]);
-      } else {
-        if(typeof val === "string") {
-          this.setFromHexString(val);
-        }
+      } else if (typeof val === "string") {
+        this.setFromHexString(val);
+      } else if (!val) {
+        this.r = Color.defaultRGB.r;
+        this.g = Color.defaultRGB.g;
+        this.b = Color.defaultRGB.b;
       }
-      this.a = this.a || 255;
+      this.a = this.a || Color.defaultA;
     }
 
     Color.prototype.rgba = function () {
@@ -239,6 +375,13 @@ var GEN;
       return new Color(rgb);
     };
 
+    //
+    // default Color
+    //
+
+    Color.defaultRGB = {r: 0, g: 0, b: 0};
+    Color.defaultA = 255;
+
     return Color;
 
   })();
@@ -249,7 +392,10 @@ var GEN;
 
 
 //
-//  painterly/painterly.js - defines a Gen.Painterly submodule
+//  painterly/painterly.js - defines a GEN.Painterly submodule
+//  and
+//  the GEN.Painterly.Context
+//  the GEN.Paintelry.Path
 //
 
 var GEN;
@@ -258,162 +404,192 @@ var GEN;
 
   (function (Painterly) {
 
+    //
+    // GEN.Painterly.Path
+    //
+
+    var Path = (function (_super) {
+
+      GEN.__extends(Path, _super);
+
+      function Path(context2d, subpaths) {
+        _super.call(this, context2d, subpaths);
+      }
+
+      return Path;
+
+    })(GEN.Path || {});
+
+    Painterly.Path = Path;
+
+    //
+    // GEN.Painterly.Context
+    //
+
+    var Context = (function (_super) {
+
+      GEN.__extends(Context, _super);
+
+      function Context(context2d) {
+        _super.call(this, context2d);
+      }
+
+      return Context;
+
+    })(GEN.Context || (GEN.Context = {}));
+
+    Painterly.Context = Context;
+
   })(GEN.Painterly || (GEN.Painterly = {}));
 
-  var Painterly = GEN.Painterly;  // TODO: need this?
+  // var Painterly = GEN.Painterly;  // TODO: need this?
   
 })(GEN || (GEN = {}));
 
-
-//
-//  painterly/context.js - defines a Gen.Context.Context class
-//
-
-var GEN;
-
-(function (GEN) {
-
-  var Context = (function (context) {
-
-    function Context(context) {
-      this.context = context;
-      this._currentPosition = {x: 0, y: 0};
-      this._path = [];
-    }
-
-    Context.Fiber = (function () {
-
-      function Fiber() {
-      }
-
-      return Fiber;
-
-    })();
-
-    Fiber.prototype.stroke = function() {
-      
-    };
-
-    Context.prototype.contextSet = function(props) {
-      for (var propName in props) {
-        this.context[propName] = props[propName];
-      }
-    };
-
-    Context.prototype.contextGet = function(propName) {
-      return this.context[propName];
-    };
-
-    Context.prototype.currentPosition = function(coords) {
-      if (coords) {
-        this._currentPosition = coords;
-      } else {
-        return this._currentPosition || { x: 0, y: 0};
-      }
-    };
-
-    Context.prototype.contextCall = function() {
-      var args = Array.prototype.slice.call(arguments);
-      var method = args.splice(0,1);
-      var pos;
-      switch (method) {
-        case "bezierCurveTo":
-          pos = {x: args[4], y: args[5]};
-          break;
-        case "moveTo":
-          pos = {x: args[0], y: args[1]};
-          break;
-      }
-      this.context[method].apply(this.context, args);
-      this.currentPosition(pos);
-    };
-
-    Context.prototype.moveTo = function(x,y) {
-      this.context.moveTo(x,y);
-      this.currentPosition({x: x, y: y});
-    };
-
-    Context.prototype.beginPath = function() {
-      this._path = [];
-    };
-
-    Context.prototype.stroke = function() {
-      this._path.forEach(function(subpath) {
-        subpath.forEach(function(fiber) {
-          fiber.stroke();
-        });
-      });
-    };
-
-    return Context;
-
-  })();
-
-  GEN.Context = Context;
-  
-})(GEN || (GEN = {}));
 
 //
 //  painterly/bezier.js
-//
-//  extends the Painterly class to have
-//  bezierCurveTo prototype method
+//  defines class GEN.Painterly.Bezier.Fiber
+//  defines class GEN.Painterly.Bezier.Subpath
+//  and
+//  extends GEN.Painterly.Context to have a bezierCurveTo prototype method
+//  that exposes GEN.Painterly.Bezier.Subpath class' "to" prototype method
+//  as a context method a la the Context2d API
 //
 
 var GEN;
 
 (function (GEN) {
 
-  var bezierCurveTo = function(cp1x, cp1y, cp2x, cp2y, x, y) {
-    var oPos = this.currentPosition();
-    var oLW = this.lineWidth || this.contextGet("lineWidth");
-    var oSS = this.strokeStyle || this.contextGet("strokeStyle");
-    var rootColor = new GEN.Color(oSS);
-    var length = Math.sqrt( Math.pow(x - oPos.x, 2) + Math.pow(y - oPos.y, 2) );
-    var reps = 5;
-    var minLW = 0.1 * oLW;
-    var maxLW = 0.4 * oLW;
-    var pVar = 0.1 * length;
-    var cpVar = 0.1 * length;
-    var params = {};
-    for (var i=0; i<reps; i++) {
-      this.contextCall(
-        "moveTo",
-        Math.floor(oPos.x + pVar * GEN.random() - pVar/2),
-        Math.floor(oPos.y + pVar * GEN.random() - pVar/2)
-      );
-      this.contextSet({
-        "lineWidth": Math.floor((maxLW - minLW) * GEN.random() + minLW),
-        "strokeStyle": rootColor.getRandomShade(0.8).rgba()
-      });
-      params.cp1x = Math.floor(cp1x + GEN.random() * cpVar - cpVar / 2);
-      params.cp1y = Math.floor(cp1y + GEN.random() * cpVar - cpVar / 2);
-      params.cp2x = Math.floor(cp2x + GEN.random() * cpVar - cpVar / 2);
-      params.cp2y = Math.floor(cp2y + GEN.random() * cpVar - cpVar / 2);
-      params.x = Math.floor(x + GEN.random() * pVar - pVar / 2);
-      params.y = Math.floor(y + GEN.random() * pVar - pVar / 2);
-      this.contextCall(
-        "bezierCurveTo",
-        params.cp1x,
-        params.cp1y,
-        params.cp2x,
-        params.cp2y,
-        params.x,
-        params.y
-      );
-    }
-    this.contextSet({
-      lineWidth: oLW,
-      strokeStyle: oSS
-    });
-    this.contextCall(
-      "moveTo",
-      x,
-      y
-    );
-  };
+  (function (Painterly) {
 
-  GEN.Painterly.prototype.bezierCurveTo = bezierCurveTo;
+    //
+    // Bezier submodule
+    //
+
+    (function (Bezier) {
+
+      //
+      // Bezier.Fiber - extends GEN.Fiber
+      //
+
+      var Fiber = (function (_super) {
+
+        GEN.__extends(Fiber, _super);
+
+        //
+        // params: [cp1x, cp1y, cp2x, cp2y, x, y]
+        // see https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Bezier_and_quadratic_curves
+        //
+        function Fiber(context2d, params, env, startPosition) {
+          _super.call(this, context2d, params, env);
+        }
+
+        Fiber.prototype.draw = function() {
+          this.context2dSet(this.env);
+          this.context2dMoveTo(startPosition.x, startPosition.y);
+          this.context2d.bezierCurveTo.apply(this.context2d, this.params);
+          this.context2dStroke();
+        };
+
+        return Fiber;
+
+      })(GEN.Fiber || {});
+
+      Bezier.Fiber = Fiber;
+
+
+      //
+      // Bezier.Subpath - extends GEN.Subpath
+      //
+
+      var Subpath = (function (_super) {
+
+        GEN.__extends(Subpath, _super);
+
+        //
+        // params: [cp1x, cp1y, cp2x, cp2y, x, y]
+        // see https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Bezier_and_quadratic_curves
+        //
+        function Subpath(context2d, params, env, color, startPosition) {
+          _super.call(this, context2d, params, env);
+        }
+
+        Subpath.prototype.to = function () {
+          _super.prototype.to.call(this);
+          var length = Math.sqrt( Math.pow(this.params.x - this.startPosition.x, 2) + Math.pow(this.params.y - this.startPosition.y, 2) );
+          var reps = 5;
+          var minLW = 0.1 * this.lineWidth;
+          var maxLW = 0.4 * this.lineWidth;
+          var pVar = 0.1 * length;
+          var cpVar = 0.1 * length;
+          var fiber, fiberParams, env, startPosition;
+          //
+          // TODO: consider object pooling
+          //
+          for (var i=0; i<reps; i++) {
+            //
+            fiberParams = [
+              Math.floor(this.params[0] + GEN.random() * cpVar - cpVar / 2),
+              Math.floor(this.params[1] + GEN.random() * cpVar - cpVar / 2),
+              Math.floor(this.params[2] + GEN.random() * cpVar - cpVar / 2),
+              Math.floor(this.params[3] + GEN.random() * cpVar - cpVar / 2),
+              Math.floor(this.params[4] + GEN.random() * pVar - pVar / 2),
+              Math.floor(this.params[5] + GEN.random() * pVar - pVar / 2)
+            ];
+            //
+            env = {
+              lineWidth: Math.floor((maxLW - minLW) * GEN.random() + minLW),
+              strokeStyle: this.color.getRandomShade(0.8).rgba()
+            };
+            startPosition = {
+              x: Math.floor(this.startPosition.x + pVar * GEN.random() - pVar/2),
+              y: Math.floor(this.startPosition.y + pVar * GEN.random() - pVar/2)
+            };
+            // note: following line will need full qualification if Fiber class def is moved elsewhere
+            fiber = new Fiber(this.context2d, fiberParams, env, startPosition);
+            this.addFiber(fiber);
+          }
+
+        };
+
+        return Subpath;
+
+      })(GEN.Subpath || {});
+
+      Bezier.Subpath = Subpath;
+
+    })(Painterly.Bezier || (Painterly.Bezier = {}));
+
+
+    //
+    // bezierCurveTo extension to GEN.Painterly.Context.prototype
+    //
+
+    (function (Context) {
+
+      var bezierCurveTo = function(cp1x, cp1y, cp2x, cp2y, x, y) {
+
+        var subpath = new Painterly.Bezier.Subpath(
+          this.context2d,
+          [cp1x, cp1y, cp2x, cp2y, x, y],
+          {
+            lineWidth: this.lineWidth,
+            lineCap: this.lineCap
+          },
+          this.color || new GEN.Color(this.strokeStyle),
+          this.currentPosition()
+        );
+        
+        this.addToPath(subpath);
+
+      };
+
+      Context.prototype.bezierCurveTo = bezierCurveTo;
+
+    })(Painterly.Context || (Painterly.Context = { prototype: {} })); // TODO: not sure about this pattern
+
+  })(GEN.Painterly || (GEN.Painterly = {}));
 
 })(GEN || (GEN = {}));
 

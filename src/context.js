@@ -16,7 +16,7 @@ var GEN;
     function Context(context2d) {
       this.context2d = context2d;
       this._currentPosition = {x: 0, y: 0};
-      this._path = [];
+      this._path = new GEN.Path(context2d);
     }
 
     //
@@ -46,7 +46,7 @@ var GEN;
     };
 
     Context.prototype.addToPath = function(subpath) {
-      this._path.push(subpath);
+      this._path.addSubpath(subpath);
     };
 
     Context.prototype.stroke = function() {

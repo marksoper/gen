@@ -122,7 +122,7 @@ var GEN;
 
       var bezierCurveTo = function(cp1x, cp1y, cp2x, cp2y, x, y) {
 
-        var subpath = new GEN.Bezier.Subpath(
+        var subpath = new Painterly.Bezier.Subpath(
           this.context2d,
           [cp1x, cp1y, cp2x, cp2y, x, y],
           {
@@ -133,7 +133,7 @@ var GEN;
           this.currentPosition()
         );
         
-        this.addSubpath(subpath);
+        this.addToPath(subpath);
 
       };
 

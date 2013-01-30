@@ -44,7 +44,7 @@ var GEN;
 
       return Context;
 
-    })(GEN.Context || {});
+    })(GEN.Context || (GEN.Context = {}));
 
     Painterly.Context = Context;
 
