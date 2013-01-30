@@ -18,6 +18,10 @@ var GEN;
       this.subpaths = subpaths || [];
     }
 
+    Path.prototype.begin = function() {
+      this.subpaths = [];
+    };
+
     Path.prototype.stroke = function() {
       this.subpaths.forEach(function(subpath) {
         subpath.draw();

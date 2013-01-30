@@ -32,6 +32,24 @@ var GEN;
       }
     };
 
+    //
+    //  GEN.Context versions of native Context2d operations
+    //
+
+    Context.prototype.moveTo = function(x,y) {
+      this.context2d.moveTo(x,y);
+      this.currentPosition({x: x, y: y});
+    };
+
+    Context.prototype.beginPath = function() {
+      this._path.begin();
+    };
+
+    Context.prototype.stroke = function() {
+      // TODO: should probably take an optional path arg
+      this._path.stroke();
+    };
+
     return Context;
 
   })();

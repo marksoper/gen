@@ -16,24 +16,17 @@ var GEN;
     // GEN.Painterly.Path
     //
 
-    var Path = (function () {
+    var Path = (function (_super) {
+
+      GEN.__extends(Path, _super);
 
       function Path(context2d, subpaths) {
-        this.context2d2d = context2d;
-        this.subpaths = subpaths || [];
+        _super.call(this, context2d, subpaths);
       }
-
-      Path.prototype.stroke = function() {
-        this.subpaths.forEach(function(subpath) {
-          subpath.forEach(function(fiber) {
-            fiber.stroke();
-          });
-        });
-      };
 
       return Path;
 
-    })();
+    })(GEN.Path || {});
 
     Painterly.Path = Path;
 
@@ -41,44 +34,23 @@ var GEN;
     // GEN.Painterly.Context
     //
 
-    var Context = (function (context2d) {
+    var Context = (function (_super) {
+
+      GEN.__extends(Context, _super);
 
       function Context(context2d) {
-        this.context2d2d = context2d;
-        this._currentPosition = {x: 0, y: 0};
-        this._path = new GEN.Painterly.Path(context2d);
+        _super.call(this, context2d);
       }
-
-      Context.prototype.currentPosition = function(coords) {
-        if (coords) {
-          this._currentPosition = coords;
-        } else {
-          return this._currentPosition || { x: 0, y: 0};
-        }
-      };
-
-      Context.prototype.moveTo = function(x,y) {
-        this.context2d.moveTo(x,y);
-        this.currentPosition({x: x, y: y});
-      };
-
-      Context.prototype.beginPath = function() {
-        this._path = [];
-      };
-
-      Context.prototype.stroke = function() {
-        this._path.stroke();
-      };
 
       return Context;
 
-    })();
+    })(GEN.Context || {});
 
     Painterly.Context = Context;
 
   })(GEN.Painterly || (GEN.Painterly = {}));
 
-  var Painterly = GEN.Painterly;  // TODO: need this?
+  // var Painterly = GEN.Painterly;  // TODO: need this?
   
 })(GEN || (GEN = {}));
 
