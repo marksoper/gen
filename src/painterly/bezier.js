@@ -1,6 +1,7 @@
 
 //
 //  painterly/bezier.js
+//
 //  defines class GEN.Painterly.Bezier.Fiber
 //  defines class GEN.Painterly.Bezier.Subpath
 //  and
@@ -34,12 +35,12 @@ var GEN;
         // see https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Bezier_and_quadratic_curves
         //
         function Fiber(context2d, params, env, startPosition) {
-          _super.call(this, context2d, params, env);
+          _super.call(this, context2d, params, env, startPosition);
         }
 
         Fiber.prototype.draw = function() {
           this.context2dSet(this.env);
-          this.context2dMoveTo(startPosition.x, startPosition.y);
+          this.context2dMoveTo(this.startPosition.x, this.startPosition.y);
           this.context2d.bezierCurveTo.apply(this.context2d, this.params);
           this.context2dStroke();
         };
@@ -64,12 +65,12 @@ var GEN;
         // see https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Bezier_and_quadratic_curves
         //
         function Subpath(context2d, params, env, color, startPosition) {
-          _super.call(this, context2d, params, env);
+          _super.call(this, context2d, params, env, color, startPosition);
         }
 
         Subpath.prototype.to = function () {
           _super.prototype.to.call(this);
-          var length = Math.sqrt( Math.pow(this.params.x - this.startPosition.x, 2) + Math.pow(this.params.y - this.startPosition.y, 2) );
+          var length = Math.sqrt( Math.pow(this.params[4] - this.startPosition.x, 2) + Math.pow(this.params[5] - this.startPosition.y, 2) );
           var reps = 5;
           var minLW = 0.1 * this.lineWidth;
           var maxLW = 0.4 * this.lineWidth;
@@ -132,7 +133,7 @@ var GEN;
           this.color || new GEN.Color(this.strokeStyle),
           this.currentPosition()
         );
-        
+        subpath.to();
         this.addToPath(subpath);
 
       };

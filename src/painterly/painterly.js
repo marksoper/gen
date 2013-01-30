@@ -1,6 +1,8 @@
 
 //
-//  painterly/painterly.js - defines a GEN.Painterly submodule
+//  painterly/painterly.js
+//
+//  defines a GEN.Painterly submodule
 //  and
 //  the GEN.Painterly.Context
 //  the GEN.Paintelry.Path

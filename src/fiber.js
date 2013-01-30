@@ -19,6 +19,7 @@ var GEN;
       this.context2d = context2d;
       this.params = params;
       this.env = env;
+      this.startPosition = startPosition;
     }
 
     Fiber.prototype.context2dSet = function(props) {
