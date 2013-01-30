@@ -12,9 +12,9 @@ var GEN;
 
   var Subpath = (function () {
 
-    function Subpath(context2d, fibers) {
+    function Subpath(context2d) {
       this.context2d = context2d;
-      this.fibers = fibers || [];
+      this.fibers = [];
     }
 
     Subpath.prototype.draw = function() {
