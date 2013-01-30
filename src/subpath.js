@@ -12,10 +12,20 @@ var GEN;
 
   var Subpath = (function () {
 
-    function Subpath(context2d) {
+    function Subpath(context2d, params, env) {
       this.context2d = context2d;
-      this.fibers = [];
+      this.params = params || [];
+      env = env || {};
+      this.color = env.color || new GEN.Color(env.strokeStyle);
+      this.startPosition = env.startPosition || {x: 0, y: 0};
+      this.lineWidth = env.lineWidth || this.defaultLineWidth || Subpath.defaultLineWidth;  // TODO: test this
+      this.lineCap = env.lineCap || this.defaultLineCap || Subpath.defaultLineCap;
+      this.begin();
     }
+
+    Subpath.prototype.addFiber = function(fiber) {
+      this.fibers.push(fiber);
+    };
 
     Subpath.prototype.draw = function() {
       this.fibers.forEach(function(fiber) {
@@ -23,9 +33,22 @@ var GEN;
       });
     };
 
+    Subpath.prototype.to = function() {
+      this.begin();
+    };
+
+    Subpath.prototype.begin = function() {
+      this.fibers = [];
+    };
+
+    Subpath.defaultLineWidth = 10;
+    Subpath.defaultLineCap = "round";
+
     return Subpath;
 
   })();
+
+
 
   GEN.Subpath = Subpath;
   

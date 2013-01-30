@@ -22,12 +22,14 @@ var GEN;
         this.g = bound(val[1]);
         this.b = bound(val[2]);
         this.a = bound(val[3]);
-      } else {
-        if(typeof val === "string") {
-          this.setFromHexString(val);
-        }
+      } else if (typeof val === "string") {
+        this.setFromHexString(val);
+      } else if (!val) {
+        this.r = Color.defaultRGB.r;
+        this.g = Color.defaultRGB.g;
+        this.b = Color.defaultRGB.b;
       }
-      this.a = this.a || 255;
+      this.a = this.a || Color.defaultA;
     }
 
     Color.prototype.rgba = function () {
@@ -83,6 +85,13 @@ var GEN;
       });
       return new Color(rgb);
     };
+
+    //
+    // default Color
+    //
+
+    Color.defaultRGB = {r: 0, g: 0, b: 0};
+    Color.defaultA = 255;
 
     return Color;
 
