@@ -15,12 +15,11 @@ var GEN;
 
   (function (Painterly) {
 
+    //
+    // Bezier submodule
+    //
+
     (function (Bezier) {
-
-      //
-      // Bezier submodule
-      //
-
 
       //
       // Bezier.Fiber - extends GEN.Fiber
@@ -34,49 +33,15 @@ var GEN;
         // params: [cp1x, cp1y, cp2x, cp2y, x, y]
         // see https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Bezier_and_quadratic_curves
         //
-        function Fiber(context2d, params, env) {
-          _super.call(this, context2d);
+        function Fiber(context2d, params, env, startPosition) {
+          _super.call(this, context2d, params, env);
         }
 
-        Fiber.prototype.to = function () {
-          _super.prototype.to.call(this);
-          var length = Math.sqrt( Math.pow(this.params.x - this.startPosition.x, 2) + Math.pow(this.params.y - this.startPosition.y, 2) );
-          var reps = 5;
-          var minLW = 0.1 * this.lineWidth;
-          var maxLW = 0.4 * this.lineWidth;
-          var pVar = 0.1 * length;
-          var cpVar = 0.1 * length;
-          var fiber;
-          for (var i=0; i<reps; i++) {
-            fiber = new GEN.
-
-
-            this.contextCall(
-              "moveTo",
-              Math.floor(this.startPosition.x + pVar * GEN.random() - pVar/2),
-              Math.floor(this.startPosition.y + pVar * GEN.random() - pVar/2)
-            );
-            this.contextSet({
-              "lineWidth": Math.floor((maxLW - minLW) * GEN.random() + minLW),
-              "strokeStyle": this.color.getRandomShade(0.8).rgba()
-            });
-            params.cp1x = Math.floor(cp1x + GEN.random() * cpVar - cpVar / 2);
-            params.cp1y = Math.floor(cp1y + GEN.random() * cpVar - cpVar / 2);
-            params.cp2x = Math.floor(cp2x + GEN.random() * cpVar - cpVar / 2);
-            params.cp2y = Math.floor(cp2y + GEN.random() * cpVar - cpVar / 2);
-            params.x = Math.floor(x + GEN.random() * pVar - pVar / 2);
-            params.y = Math.floor(y + GEN.random() * pVar - pVar / 2);
-            this.contextCall(
-              "bezierCurveTo",
-              params.cp1x,
-              params.cp1y,
-              params.cp2x,
-              params.cp2y,
-              params.x,
-              params.y
-            );
-          }
-
+        Fiber.prototype.draw = function() {
+          this.context2dSet(this.env);
+          this.context2dMoveTo(startPosition.x, startPosition.y);
+          this.context2d.bezierCurveTo.apply(this.context2d, this.params);
+          this.context2dStroke();
         };
 
         return Fiber;
@@ -98,8 +63,8 @@ var GEN;
         // params: [cp1x, cp1y, cp2x, cp2y, x, y]
         // see https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Bezier_and_quadratic_curves
         //
-        function Subpath(context2d, params, env) {
-          _super.call(this, context2d);
+        function Subpath(context2d, params, env, color, startPosition) {
+          _super.call(this, context2d, params, env);
         }
 
         Subpath.prototype.to = function () {
@@ -110,35 +75,32 @@ var GEN;
           var maxLW = 0.4 * this.lineWidth;
           var pVar = 0.1 * length;
           var cpVar = 0.1 * length;
-          var fiber;
+          var fiber, fiberParams, env, startPosition;
+          //
+          // TODO: consider object pooling
+          //
           for (var i=0; i<reps; i++) {
-            fiber = new GEN.
-
-
-            this.contextCall(
-              "moveTo",
-              Math.floor(this.startPosition.x + pVar * GEN.random() - pVar/2),
-              Math.floor(this.startPosition.y + pVar * GEN.random() - pVar/2)
-            );
-            this.contextSet({
-              "lineWidth": Math.floor((maxLW - minLW) * GEN.random() + minLW),
-              "strokeStyle": this.color.getRandomShade(0.8).rgba()
-            });
-            params.cp1x = Math.floor(cp1x + GEN.random() * cpVar - cpVar / 2);
-            params.cp1y = Math.floor(cp1y + GEN.random() * cpVar - cpVar / 2);
-            params.cp2x = Math.floor(cp2x + GEN.random() * cpVar - cpVar / 2);
-            params.cp2y = Math.floor(cp2y + GEN.random() * cpVar - cpVar / 2);
-            params.x = Math.floor(x + GEN.random() * pVar - pVar / 2);
-            params.y = Math.floor(y + GEN.random() * pVar - pVar / 2);
-            this.contextCall(
-              "bezierCurveTo",
-              params.cp1x,
-              params.cp1y,
-              params.cp2x,
-              params.cp2y,
-              params.x,
-              params.y
-            );
+            //
+            fiberParams = [
+              Math.floor(this.params[0] + GEN.random() * cpVar - cpVar / 2),
+              Math.floor(this.params[1] + GEN.random() * cpVar - cpVar / 2),
+              Math.floor(this.params[2] + GEN.random() * cpVar - cpVar / 2),
+              Math.floor(this.params[3] + GEN.random() * cpVar - cpVar / 2),
+              Math.floor(this.params[4] + GEN.random() * pVar - pVar / 2),
+              Math.floor(this.params[5] + GEN.random() * pVar - pVar / 2)
+            ];
+            //
+            env = {
+              lineWidth: Math.floor((maxLW - minLW) * GEN.random() + minLW),
+              strokeStyle: this.color.getRandomShade(0.8).rgba()
+            };
+            startPosition = {
+              x: Math.floor(this.startPosition.x + pVar * GEN.random() - pVar/2),
+              y: Math.floor(this.startPosition.y + pVar * GEN.random() - pVar/2)
+            };
+            // note: following line will need full qualification if Fiber class def is moved elsewhere
+            fiber = new Fiber(this.context2d, fiberParams, env, startPosition);
+            this.addFiber(fiber);
           }
 
         };
@@ -148,7 +110,6 @@ var GEN;
       })(GEN.Subpath || {});
 
       Bezier.Subpath = Subpath;
-
 
     })(Painterly.Bezier || (Painterly.Bezier = {}));
 
@@ -161,11 +122,18 @@ var GEN;
 
       var bezierCurveTo = function(cp1x, cp1y, cp2x, cp2y, x, y) {
 
-
-
-
-
-
+        var subpath = new GEN.Bezier.Subpath(
+          this.context2d,
+          [cp1x, cp1y, cp2x, cp2y, x, y],
+          {
+            lineWidth: this.lineWidth,
+            lineCap: this.lineCap
+          },
+          this.color || new GEN.Color(this.strokeStyle),
+          this.currentPosition()
+        );
+        
+        this.addSubpath(subpath);
 
       };
 

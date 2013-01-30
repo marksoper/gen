@@ -15,8 +15,10 @@ var GEN;
 
   var Fiber = (function () {
 
-    function Fiber(context2d) {
+    function Fiber(context2d, params, env, startPosition) {
       this.context2d = context2d;
+      this.params = params;
+      this.env = env;
     }
 
     Fiber.prototype.context2dSet = function(props) {
@@ -29,6 +31,17 @@ var GEN;
       return this.context2d[propName];
     };
 
+    Fiber.prototype.context2dMoveTo = function(x,y) {
+      this.context2d.moveTo(x,y);
+    };
+
+    Fiber.prototype.context2dStroke = function() {
+      this.context2d.stroke();
+    };
+
+    /*
+    * TODO: not sure what base draw functionality should be yet
+    *
     Fiber.prototype.draw = function(fiberDrawType, fiberDrawParams, initialPosition) {
       this.context2d.beginPath();
       if (fiberDrawType === "drawRect") {
@@ -39,6 +52,9 @@ var GEN;
       }
       this.context2d.stroke();
     };
+    *
+    *
+    */
 
     return Fiber;
 

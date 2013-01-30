@@ -45,6 +45,10 @@ var GEN;
       this._path.begin();
     };
 
+    Context.prototype.addToPath = function(subpath) {
+      this._path.push(subpath);
+    };
+
     Context.prototype.stroke = function() {
       // TODO: should probably take an optional path arg
       this._path.stroke();

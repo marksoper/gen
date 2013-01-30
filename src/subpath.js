@@ -12,12 +12,16 @@ var GEN;
 
   var Subpath = (function () {
 
-    function Subpath(context2d, params, env) {
+    //
+    // needs to be called with all args for now
+    // TODO: figure out a better multi-ariety parameterization
+    //
+    function Subpath(context2d, params, env, color, startPosition) {
       this.context2d = context2d;
       this.params = params || [];
-      env = env || {};
-      this.color = env.color || new GEN.Color(env.strokeStyle);
-      this.startPosition = env.startPosition || {x: 0, y: 0};
+      this.env = env || {};
+      this.color = color || new GEN.Color(env.strokeStyle);
+      this.startPosition = startPosition || {x: 0, y: 0};
       this.lineWidth = env.lineWidth || this.defaultLineWidth || Subpath.defaultLineWidth;  // TODO: test this
       this.lineCap = env.lineCap || this.defaultLineCap || Subpath.defaultLineCap;
       this.begin();
