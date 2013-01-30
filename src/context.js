@@ -1,51 +1,23 @@
 
 //
-//  context.js - defines a class Context
-//  that wraps the normal canvas "2d" context
+//  context.js - defines a class Gen.Context
+//  that wraps Context2d - the normal canvas "2d" context ()
+//
+//
+//  TODO: more explanation
 //
 
 var GEN;
 
 (function (GEN) {
 
-  var Context = (function (context) {
+  var Context = (function (context2d) {
 
-    function Context(context) {
-      this.context = context;
+    function Context(context2d) {
+      this.context2d = context2d;
       this._currentPosition = {x: 0, y: 0};
       this._path = [];
     }
-
-    //
-    // "context" methods manage data and call native methods on
-    // this.context, the original passed-in "2d" context
-    //
-
-    Context.prototype.contextSet = function(props) {
-      for (var propName in props) {
-        this.context[propName] = props[propName];
-      }
-    };
-
-    Context.prototype.contextGet = function(propName) {
-      return this.context[propName];
-    };
-
-    Context.prototype.contextCall = function() {
-      var args = Array.prototype.slice.call(arguments);
-      var method = args.splice(0,1);
-      var pos;
-      switch (method) {
-        case "bezierCurveTo":
-          pos = {x: args[4], y: args[5]};
-          break;
-        case "moveTo":
-          pos = {x: args[0], y: args[1]};
-          break;
-      }
-      this.context[method].apply(this.context, args);
-      this.currentPosition(pos);
-    };
 
     //
     // currentPosition gets and sets state about the current
