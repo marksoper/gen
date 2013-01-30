@@ -12,7 +12,22 @@ var GEN;
 
     function Painterly(context) {
       this.context = context;
+      this._currentPosition = {x: 0, y: 0};
+      this._path = [];
     }
+
+    Painterly.Fiber = (function () {
+
+      function Fiber() {
+      }
+
+      return Fiber;
+
+    })();
+
+    Fiber.prototype.stroke = function() {
+      
+    };
 
     Painterly.prototype.contextSet = function(props) {
       for (var propName in props) {
@@ -54,7 +69,15 @@ var GEN;
     };
 
     Painterly.prototype.beginPath = function() {
-      this.context.beginPath();
+      this._path = [];
+    };
+
+    Painterly.prototype.stroke = function() {
+      this._path.forEach(function(subpath) {
+        subpath.forEach(function(fiber) {
+          fiber.stroke();
+        });
+      });
     };
 
     return Painterly;
