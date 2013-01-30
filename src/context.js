@@ -11,7 +11,7 @@ var GEN;
 
 (function (GEN) {
 
-  var Context = (function (context2d) {
+  var Context = (function () {
 
     function Context(context2d) {
       this.context2d = context2d;
@@ -30,27 +30,6 @@ var GEN;
       } else {
         return this._currentPosition || { x: 0, y: 0};
       }
-    };
-
-    //
-    // Context implements many of the native context methods
-    //
-
-    Context.prototype.moveTo = function(x,y) {
-      this.context.moveTo(x,y);
-      this.currentPosition({x: x, y: y});
-    };
-
-    Context.prototype.beginPath = function() {
-      this._path = [];
-    };
-
-    Context.prototype.stroke = function() {
-      this._path.forEach(function(subpath) {
-        subpath.forEach(function(fiber) {
-          fiber.stroke();
-        });
-      });
     };
 
     return Context;

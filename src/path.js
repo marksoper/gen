@@ -11,7 +11,7 @@ var GEN;
 
 (function (GEN) {
 
-  var Path = (function (context2d, subpaths) {
+  var Path = (function () {
 
     function Path(context2d, subpaths) {
       this.context2d = context2d;

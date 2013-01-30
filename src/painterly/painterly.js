@@ -1,89 +1,84 @@
 
 //
-//  painterly.js - defines a "painterly" context
-//  that wraps the normal canvas "2d" context
+//  painterly/painterly.js - defines a GEN.Painterly submodule
+//  and
+//  the GEN.Painterly.Context
+//  the GEN.Paintelry.Path
 //
 
 var GEN;
 
 (function (GEN) {
 
-  var Painterly = (function (context) {
+  (function (Painterly) {
 
-    function Painterly(context) {
-      this.context = context;
-      this._currentPosition = {x: 0, y: 0};
-      this._path = [];
-    }
+    //
+    // GEN.Painterly.Path
+    //
 
-    Painterly.Fiber = (function () {
+    var Path = (function () {
 
-      function Fiber() {
+      function Path(context2d, subpaths) {
+        this.context2d2d = context2d;
+        this.subpaths = subpaths || [];
       }
 
-      return Fiber;
+      Path.prototype.stroke = function() {
+        this.subpaths.forEach(function(subpath) {
+          subpath.forEach(function(fiber) {
+            fiber.stroke();
+          });
+        });
+      };
+
+      return Path;
 
     })();
 
-    Fiber.prototype.stroke = function() {
-      
-    };
+    Painterly.Path = Path;
 
-    Painterly.prototype.contextSet = function(props) {
-      for (var propName in props) {
-        this.context[propName] = props[propName];
+    //
+    // GEN.Painterly.Context
+    //
+
+    var Context = (function (context2d) {
+
+      function Context(context2d) {
+        this.context2d2d = context2d;
+        this._currentPosition = {x: 0, y: 0};
+        this._path = new GEN.Painterly.Path(context2d);
       }
-    };
 
-    Painterly.prototype.contextGet = function(propName) {
-      return this.context[propName];
-    };
+      Context.prototype.currentPosition = function(coords) {
+        if (coords) {
+          this._currentPosition = coords;
+        } else {
+          return this._currentPosition || { x: 0, y: 0};
+        }
+      };
 
-    Painterly.prototype.currentPosition = function(coords) {
-      if (coords) {
-        this._currentPosition = coords;
-      } else {
-        return this._currentPosition || { x: 0, y: 0};
-      }
-    };
+      Context.prototype.moveTo = function(x,y) {
+        this.context2d.moveTo(x,y);
+        this.currentPosition({x: x, y: y});
+      };
 
-    Painterly.prototype.contextCall = function() {
-      var args = Array.prototype.slice.call(arguments);
-      var method = args.splice(0,1);
-      var pos;
-      switch (method) {
-        case "bezierCurveTo":
-          pos = {x: args[4], y: args[5]};
-          break;
-        case "moveTo":
-          pos = {x: args[0], y: args[1]};
-          break;
-      }
-      this.context[method].apply(this.context, args);
-      this.currentPosition(pos);
-    };
+      Context.prototype.beginPath = function() {
+        this._path = [];
+      };
 
-    Painterly.prototype.moveTo = function(x,y) {
-      this.context.moveTo(x,y);
-      this.currentPosition({x: x, y: y});
-    };
+      Context.prototype.stroke = function() {
+        this._path.stroke();
+      };
 
-    Painterly.prototype.beginPath = function() {
-      this._path = [];
-    };
+      return Context;
 
-    Painterly.prototype.stroke = function() {
-      this._path.forEach(function(subpath) {
-        subpath.forEach(function(fiber) {
-          fiber.stroke();
-        });
-      });
-    };
+    })();
 
-    return Painterly;
+    Painterly.Context = Context;
 
-  })();
+  })(GEN.Painterly || (GEN.Painterly = {}));
 
-  GEN.Painterly = Painterly;
+  var Painterly = GEN.Painterly;  // TODO: need this?
   
 })(GEN || (GEN = {}));
+

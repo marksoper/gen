@@ -13,7 +13,7 @@ var GEN;
 
 (function (GEN) {
 
-  var Fiber = (function (context2d) {
+  var Fiber = (function () {
 
     function Fiber(context2d) {
       this.context2d = context2d;

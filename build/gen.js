@@ -17,6 +17,123 @@ var GEN;
   
 })(GEN || (GEN = {}));
 
+
+//
+//  fiber.js - defines a class Gen.Fiber
+//  which is the atomic unit of drawing
+//  many Gen.Fiber objects are combined to produce a Gen.Subpath object (lines, curves, arcs, etc.) in Gen.Context
+//  a fiber represents a simple "single-subpath" path on the native Context2d (native "2d" Context)
+//  and exposes a draw method pattern
+//  that corresponds to a beginPath, moveTo, [arcTo, lineTo, ...], stroke on Context2d
+//
+
+var GEN;
+
+(function (GEN) {
+
+  var Fiber = (function (context2d) {
+
+    function Fiber(context2d) {
+      this.context2d = context2d;
+    }
+
+    Fiber.prototype.context2dSet = function(props) {
+      for (var propName in props) {
+        this.context2d[propName] = props[propName];
+      }
+    };
+
+    Fiber.prototype.context2dGet = function(propName) {
+      return this.context2d[propName];
+    };
+
+    Fiber.prototype.draw = function(fiberDrawType, fiberDrawParams, initialPosition) {
+      this.context2d.beginPath();
+      if (fiberDrawType === "drawRect") {
+        // TODO: handle drawRect
+      } else {
+        this.context2d.moveTo(initialPosition.x, initialPosition.y);
+        this.context2d[fiberDrawType].apply(this.context2d, fiberDrawParams);
+      }
+      this.context2d.stroke();
+    };
+
+    return Fiber;
+
+  })();
+
+  GEN.Fiber = Fiber;
+  
+})(GEN || (GEN = {}));
+
+
+
+//
+//  subpath.js - defines a class Gen.Subpath
+//  which is a collection of one or more Gen.Fiber objects
+//  many Gen.Subpath objects (lines, curves, arcs, etc.) are combined to produce a Gen.Context.Path object
+//  
+
+var GEN;
+
+(function (GEN) {
+
+  var Subpath = (function (context2d, fibers) {
+
+    function Subpath(context2d, fibers) {
+      this.context2d = context2d;
+      this.fibers = fibers || [];
+    }
+
+    Subpath.prototype.draw = function() {
+      this.fibers.forEach(function(fiber) {
+        fiber.draw();
+      });
+    };
+
+    return Subpath;
+
+  })();
+
+  GEN.Subpath = Subpath;
+  
+})(GEN || (GEN = {}));
+
+
+
+//
+//  path.js - defines a class Gen.Path
+//  which is a collection of Gen.Subpath objects
+//  Gen.Path has methods analogous to the Context2d path operations
+//  e.g. beginPath, stroke, etc.
+//  
+
+var GEN;
+
+(function (GEN) {
+
+  var Path = (function (context2d, subpaths) {
+
+    function Path(context2d, subpaths) {
+      this.context2d = context2d;
+      this.subpaths = subpaths || [];
+    }
+
+    Path.prototype.stroke = function() {
+      this.subpaths.forEach(function(subpath) {
+        subpath.draw();
+      });
+    };
+
+    return Path;
+
+  })();
+
+  GEN.Path = Path;
+  
+})(GEN || (GEN = {}));
+
+
 //
 //  random.js - random number generator
 //
@@ -132,31 +249,62 @@ var GEN;
 
 
 //
-//  painterly.js - defines a "painterly" context
-//  that wraps the normal canvas "2d" context
+//  painterly/painterly.js - defines a Gen.Painterly submodule
 //
 
 var GEN;
 
 (function (GEN) {
 
-  var Painterly = (function (context) {
+  (function (Painterly) {
 
-    function Painterly(context) {
+  })(GEN.Painterly || (GEN.Painterly = {}));
+
+  var Painterly = GEN.Painterly;  // TODO: need this?
+  
+})(GEN || (GEN = {}));
+
+
+//
+//  painterly/context.js - defines a Gen.Context.Context class
+//
+
+var GEN;
+
+(function (GEN) {
+
+  var Context = (function (context) {
+
+    function Context(context) {
       this.context = context;
+      this._currentPosition = {x: 0, y: 0};
+      this._path = [];
     }
 
-    Painterly.prototype.contextSet = function(props) {
+    Context.Fiber = (function () {
+
+      function Fiber() {
+      }
+
+      return Fiber;
+
+    })();
+
+    Fiber.prototype.stroke = function() {
+      
+    };
+
+    Context.prototype.contextSet = function(props) {
       for (var propName in props) {
         this.context[propName] = props[propName];
       }
     };
 
-    Painterly.prototype.contextGet = function(propName) {
+    Context.prototype.contextGet = function(propName) {
       return this.context[propName];
     };
 
-    Painterly.prototype.currentPosition = function(coords) {
+    Context.prototype.currentPosition = function(coords) {
       if (coords) {
         this._currentPosition = coords;
       } else {
@@ -164,7 +312,7 @@ var GEN;
       }
     };
 
-    Painterly.prototype.contextCall = function() {
+    Context.prototype.contextCall = function() {
       var args = Array.prototype.slice.call(arguments);
       var method = args.splice(0,1);
       var pos;
@@ -180,20 +328,28 @@ var GEN;
       this.currentPosition(pos);
     };
 
-    Painterly.prototype.moveTo = function(x,y) {
+    Context.prototype.moveTo = function(x,y) {
       this.context.moveTo(x,y);
       this.currentPosition({x: x, y: y});
     };
 
-    Painterly.prototype.beginPath = function() {
-      this.context.beginPath();
+    Context.prototype.beginPath = function() {
+      this._path = [];
     };
 
-    return Painterly;
+    Context.prototype.stroke = function() {
+      this._path.forEach(function(subpath) {
+        subpath.forEach(function(fiber) {
+          fiber.stroke();
+        });
+      });
+    };
+
+    return Context;
 
   })();
 
-  GEN.Painterly = Painterly;
+  GEN.Context = Context;
   
 })(GEN || (GEN = {}));
 
