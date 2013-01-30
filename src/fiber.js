@@ -22,6 +22,10 @@ var GEN;
       this.startPosition = startPosition;
     }
 
+    Fiber.prototype.context2dBeginPath = function() {
+      this.context2d.beginPath();
+    };
+
     Fiber.prototype.context2dSet = function(props) {
       for (var propName in props) {
         this.context2d[propName] = props[propName];

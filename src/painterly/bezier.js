@@ -39,6 +39,7 @@ var GEN;
         }
 
         Fiber.prototype.draw = function() {
+          this.context2dBeginPath();
           this.context2dSet(this.env);
           this.context2dMoveTo(this.startPosition.x, this.startPosition.y);
           this.context2d.bezierCurveTo.apply(this.context2d, this.params);
@@ -71,7 +72,7 @@ var GEN;
         Subpath.prototype.to = function () {
           _super.prototype.to.call(this);
           var length = Math.sqrt( Math.pow(this.params[4] - this.startPosition.x, 2) + Math.pow(this.params[5] - this.startPosition.y, 2) );
-          var reps = 5;
+          var reps = 30;
           var minLW = 0.1 * this.lineWidth;
           var maxLW = 0.4 * this.lineWidth;
           var pVar = 0.1 * length;
