@@ -7,8 +7,7 @@ var mainBezierPerformance = function() {
   var contextGen2d = canvasGen.getContext('2d');
   var painterly = new GEN.Painterly.Context(contextGen2d);
 
-
-  var testCount = 100;
+  var testCount = 3000;
   var margin = 30;
   var lineWidth = 100;
 

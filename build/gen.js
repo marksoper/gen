@@ -315,7 +315,7 @@ var GEN;
         this.r = bound(val[0]);
         this.g = bound(val[1]);
         this.b = bound(val[2]);
-        this.a = bound(val[3]);
+        this.a = val[3];
       } else if (typeof val === "string") {
         this.setFromHexString(val);
       } else if (!val) {
@@ -337,7 +337,7 @@ var GEN;
 
     Color.prototype.setRandom = function () {
       this.setFromHexString((Math.floor(Math.random() * 16777215)).toString(16));
-      this.a = this.a || 255;
+      this.a = this.a || 1;
     };
 
     Color.prototype.setFromHexString = function (hexStr) {
@@ -377,6 +377,7 @@ var GEN;
         cNew = bound(255 * (cNorm + delta));
         rgb.push(cNew);
       });
+      rgb[3] = 0.2*Math.random() + 0.8;
       return new Color(rgb);
     };
 
@@ -385,7 +386,7 @@ var GEN;
     //
 
     Color.defaultRGB = {r: 0, g: 0, b: 0};
-    Color.defaultA = 255;
+    Color.defaultA = 1;
 
     return Color;
 
@@ -527,11 +528,11 @@ var GEN;
         Subpath.prototype.to = function () {
           _super.prototype.to.call(this);
           var length = Math.sqrt( Math.pow(this.params[4] - this.startPosition.x, 2) + Math.pow(this.params[5] - this.startPosition.y, 2) );
-          var reps = 10;
-          var minLW = 0.1 * this.lineWidth;
-          var maxLW = 0.4 * this.lineWidth;
-          var pVar = 0.002 * length * this.lineWidth;
-          var cpVar = 0.002 * length * this.lineWidth;
+          var reps = 20;
+          var minLW = 0.005 * this.lineWidth;
+          var maxLW = 0.2 * this.lineWidth;
+          var pVar = 0.001 * length * this.lineWidth;
+          var cpVar = 0.001 * length * this.lineWidth;
           var fiber, fiberParams, env, startPosition;
           //
           // TODO: consider object pooling
