@@ -7,7 +7,7 @@ var mainBezierPerformance = function() {
   var contextGen2d = canvasGen.getContext('2d');
   var painterly = new GEN.Painterly.Context(contextGen2d);
 
-  var testCount = 3000;
+  var testCount = 10000;
   var margin = 30;
   var lineWidth = 100;
 
@@ -36,7 +36,7 @@ var mainBezierPerformance = function() {
     var w = canvasGen.width;
     var h = canvasGen.height;
 
-    var y=document.getElementById("header").offsetHeight + 2*margin;
+    var y=document.getElementById("header").offsetHeight + 4*margin;
     var initialY = y;
 
     var tDelta_2d = 0;
@@ -83,9 +83,10 @@ var mainBezierPerformance = function() {
 
     console.log("printing final results");
     context2d.font = "16pt Helvetica";
-    drawText("Grand total for: " + testCount + " tests: Bezier on normal context2d: " + tDelta_2d, 0.05*w, initialY - margin);
-    drawText("Grand total for: " + testCount + " tests: Bezier on Gen context: " + tDelta_gen, 0.55*w, initialY - margin);
-
+    drawText("Avg over " + testCount + " tests on normal context2d: " + tDelta_2d / testCount + " msec", 0.05*w, initialY - 2.5*margin);
+    drawText("Avg over " + testCount + " tests on Gen context: " + tDelta_gen / testCount + " msec", 0.55*w, initialY - 2.5*margin);
+    context2d.font = "32pt Helvetica";
+    drawText("Gen takes " + Math.round(tDelta_gen / tDelta_2d) + " times longer !", 0.30*w, initialY + 0.1*w );
   };
 
   draw();
