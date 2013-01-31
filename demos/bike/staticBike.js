@@ -94,6 +94,12 @@ var mainBike = function() {
   };
   draw();
 
+  context2d.font = "10pt Helvetica";
+  var drawText = function(text, x, y, fillStyle) {
+    context.fillStyle = fillStyle || "#000000";
+    context.fillText(text, x, y);
+  };
+
   var canvasResizing;
   window.addEventListener("resize", function() {
     if (canvasResizing) {

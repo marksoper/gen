@@ -26,7 +26,7 @@ var mainPainterlyArc = function() {
 
   var mpxNormal = Math.floor(canvas.width / 4);
   var mpxPainterly = 3 * Math.floor(canvas.width / 4);
-  var y=0;
+  var y=document.getElementById("header").offsetHeight + 2*margin;
 
   var arcNormal = function(x, y, radius, startAngle, endAngle, anticlockwise) {
     context.beginPath();
