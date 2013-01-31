@@ -51,7 +51,6 @@ var mainBezierPerformance = function() {
       context2d.bezierCurveTo(0.25*w, y-0.1*w, 0.35*w, y + 0.1*w, 0.4*w, y + 0.2*w);
       context2d.stroke();
       tDelta_2d += (Date.now() - tStart);
-      drawText("Running total for: " + i + " tests: Bezier on normal context2d: " + tDelta_2d, 0.05*w, y + margin);
     };
 
     var drawContextGen = function(y) {
@@ -63,7 +62,6 @@ var mainBezierPerformance = function() {
       painterly.bezierCurveTo(0.75*w, y-0.1*w, 0.85*w, y + 0.1*w, 0.9*w, y + 0.2*w);
       painterly.stroke();
       tDelta_gen += (Date.now() - tStart);
-      drawText("Running total for: " + i + " tests: Bezier on Gen context: " + tDelta_gen, 0.55*w, y + margin);
     };
 
     
