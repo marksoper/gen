@@ -305,6 +305,30 @@ var GEN;
     return Math.min(255, Math.max(0, Math.floor(num)));
   }
 
+  //
+  // adapted from d3's d2_rgb_hsl function
+  // https://github.com/mbostock/d3/blob/master/src/core/rgb.js
+  // Thanks to Mike Bostock - http://bost.ocks.org/mike/
+  //
+  function rgb_hsl(r, g, b) {
+    var min = Math.min(r /= 255, g /= 255, b /= 255),
+        max = Math.max(r, g, b),
+        d = max - min,
+        h,
+        s,
+        l = (max + min) / 2;
+    if (d) {
+      s = l < 0.5 ? d / (max + min) : d / (2 - max - min);
+      if (r == max) h = (g - b) / d + (g < b ? 6 : 0);
+      else if (g == max) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      h *= 60;
+    } else {
+      s = h = 0;
+    }
+    return { h: h, s: s, l: l};
+  }
+
   var Color = (function () {
 
     //
@@ -335,6 +359,22 @@ var GEN;
       ].join(",") + ")";
     };
 
+    Color.prototype.setHsl = function() {
+      var hsl = rgb_hsl(this.r, this.g, this.b);
+      this.h = hsl.h;
+      this.s = hsl.s;
+      this.l = hsl.l;
+    };
+
+    Color.prototype.hsla = function(h,s,l,a) {
+      return "hsla(" + [
+        h || this.h,
+        (s || this.s) * 100 + "%",
+        (l || this.l) * 100 + "%",
+        a || this.a
+      ].join(",") + ")";
+    };
+ 
     Color.prototype.setRandom = function () {
       this.setFromHexString((Math.floor(Math.random() * 16777215)).toString(16));
       this.a = this.a || 1;
@@ -354,10 +394,23 @@ var GEN;
       return '#' + (this.b | (this.g << 8) | (this.r << 16)).toString(16);
     };
 
+    Color.prototype.randomVariationHsl = function (variance) {
+      variance = variance || 0.1;
+      if (!this.h || !this.s || !this.l) {
+        this.setHsl();
+      }
+      if (this.l > 0.5) {
+        //variance = Math.pow(variance, 2);
+        variance = Math.sqrt((1.0 - this.l)) * variance;
+      }
+      var vOver2 = 0.5 * variance;
+      var l = GEN.random(this.l - vOver2, this.l + vOver2);
+      var a = GEN.random(0.999, 1);  // TODO: re-evaluate best val here
+      return this.hsla(undefined,undefined,l,a);
+    };
+
     //
-    // TODO: Refactor this to convert back-forth to HSL
-    // Doesn't seem that RGB will work for this, results haven't been all that good
-    // especially for darker colors
+    // TODO: Get rid of this once demos no longer depend on it
     //
     Color.prototype.getRandomShade = function (shadeRange) {
       shadeRange = shadeRange || 0.5;
