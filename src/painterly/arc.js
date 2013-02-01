@@ -31,17 +31,16 @@ var GEN;
         GEN.__extends(Fiber, _super);
 
         //
-        // params: [cp1x, cp1y, cp2x, cp2y, x, y]
-        // see https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Arc_and_quadratic_curves
+        // params: [x, y, radius, startAngle, endAngle, anticlockwise]
+        // https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Arcs
         //
-        function Fiber(context2d, params, env, startPosition) {
-          _super.call(this, context2d, params, env, startPosition);
+        function Fiber(context2d, params, env) {
+          _super.call(this, context2d, params, env);
         }
 
         Fiber.prototype.draw = function() {
           this.context2dBeginPath();
           this.context2dSet(this.env);
-          this.context2dMoveTo(this.startPosition.x, this.startPosition.y);
           this.context2d.arc.apply(this.context2d, this.params);
           this.context2dStroke();
         };
@@ -78,8 +77,8 @@ var GEN;
           var cpVar = 0.0015 * length * this.lineWidth;
           var arcLength = this.params[4] - this.params[3];
           var bisectAngle = 0.5 * arcLength;
-          var angleVar = 0.05 * arcLength;
-          //var lineWidth, lwDelta, radVar, minRadius, maxRadius, radius, mpDeltaMin, mpDeltaMax, fiber, fiberParams, env, startPosition;
+          var anglePointVar = 0.05 * arcLength;
+          var lineWidth, lwDelta, radVar, minRad, maxRad, radius, mpDeltaMin, mpDeltaMax, fiberLength, startAngle, endAngle, fiber, fiberParams, env;
           //
           // TODO: consider object pooling
           //
@@ -92,10 +91,10 @@ var GEN;
             maxRad = this.params[2] + radVar;
             radius = Math.floor ( GEN.random(minRad, maxRad) );
             mpDeltaMax = 0.125 * (this.params[2] - radius + lwDelta);
-            mpDeltaMin = 0 - mpVarMax;
+            mpDeltaMin = 0 - mpDeltaMax;
             fiberLength = arcLength * GEN.random();
-            startAngle = Math.max(this.params[3] + GEN.random(0-angleVAr, angleVar), bisectAngle - fiberLength);
-            endAngle = Math.min(this.params[4] + GEN.random(0-angleVAr, angleVar), bisectAngle + fiberLength);
+            startAngle = Math.max(this.params[3] + GEN.random(0-anglePointVar, anglePointVar), bisectAngle - fiberLength);
+            endAngle = Math.min(this.params[4] + GEN.random(0-anglePointVar, anglePointVar), bisectAngle + fiberLength);
             fiberParams = [
               this.params[0] + GEN.random(mpDeltaMin, mpDeltaMax),
               this.params[1] + GEN.random(mpDeltaMin, mpDeltaMax),
