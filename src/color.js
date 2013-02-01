@@ -54,6 +54,7 @@ var GEN;
         this.b = Color.defaultRGB.b;
       }
       this.a = this.a || Color.defaultA;
+      this.randomShadeVariance = 0.4;
     }
 
     Color.prototype.rgba = function () {
@@ -101,7 +102,7 @@ var GEN;
     };
 
     Color.prototype.randomVariationHsl = function (variance) {
-      variance = variance || 0.1;
+      variance = variance || this.randomShadeVariance;
       if (!this.h || !this.s || !this.l) {
         this.setHsl();
       }
@@ -113,31 +114,6 @@ var GEN;
       var l = GEN.random(this.l - vOver2, this.l + vOver2);
       var a = GEN.random(0.999, 1);  // TODO: re-evaluate best val here
       return this.hsla(undefined,undefined,l,a);
-    };
-
-    //
-    // TODO: Get rid of this once demos no longer depend on it
-    //
-    Color.prototype.getRandomShade = function (shadeRange) {
-      shadeRange = shadeRange || 0.5;
-      var seed = 2 * Math.random() - 1;
-      var cNorm;
-      var delta;
-      var cNew;
-      var rgb = [];
-      var self = this;
-      [
-        "r",
-        "g",
-        "b"
-      ].forEach(function (c) {
-        cNorm = self[c] / 255;
-        delta = seed * shadeRange * Math.min(cNorm, 1 - cNorm);
-        cNew = bound(255 * (cNorm + delta));
-        rgb.push(cNew);
-      });
-      rgb[3] = 0.2*Math.random() + 0.8;
-      return new Color(rgb);
     };
 
     //

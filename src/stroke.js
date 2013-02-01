@@ -49,7 +49,7 @@ var GEN;
         cp1Y = Math.floor(this.cp1Y + Math.random() * length * cpSkew - length * cpSkew / 2);
         cp2X = Math.floor(this.cp2X + Math.random() * length * cpSkew - length * cpSkew / 2);
         cp2Y = Math.floor(this.cp2Y + Math.random() * length * cpSkew - length * cpSkew / 2);
-        context.strokeStyle = (this.color.getRandomShade(0.8)).rgba();
+        context.strokeStyle = this.color.randomVariationHsl(0.4);
         context.lineWidth = Math.floor( Math.max(1, (this.lineWidth/12 - this.lineWidth/24) * Math.random() + this.lineWidth/24 ) );
         context.beginPath();
         context.moveTo(startX, startY);

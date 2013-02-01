@@ -348,6 +348,8 @@ var GEN;
         this.b = Color.defaultRGB.b;
       }
       this.a = this.a || Color.defaultA;
+      this.randomShadeVariance = 0.4;
+      this.setHsl();
     }
 
     Color.prototype.rgba = function () {
@@ -395,7 +397,7 @@ var GEN;
     };
 
     Color.prototype.randomVariationHsl = function (variance) {
-      variance = variance || 0.1;
+      variance = variance || this.randomShadeVariance;
       if (!this.h || !this.s || !this.l) {
         this.setHsl();
       }
@@ -407,31 +409,6 @@ var GEN;
       var l = GEN.random(this.l - vOver2, this.l + vOver2);
       var a = GEN.random(0.999, 1);  // TODO: re-evaluate best val here
       return this.hsla(undefined,undefined,l,a);
-    };
-
-    //
-    // TODO: Get rid of this once demos no longer depend on it
-    //
-    Color.prototype.getRandomShade = function (shadeRange) {
-      shadeRange = shadeRange || 0.5;
-      var seed = 2 * Math.random() - 1;
-      var cNorm;
-      var delta;
-      var cNew;
-      var rgb = [];
-      var self = this;
-      [
-        "r",
-        "g",
-        "b"
-      ].forEach(function (c) {
-        cNorm = self[c] / 255;
-        delta = seed * shadeRange * Math.min(cNorm, 1 - cNorm);
-        cNew = bound(255 * (cNorm + delta));
-        rgb.push(cNew);
-      });
-      rgb[3] = 0.2*Math.random() + 0.8;
-      return new Color(rgb);
     };
 
     //
@@ -603,7 +580,7 @@ var GEN;
             //
             env = {
               lineWidth: Math.floor((maxLW - minLW) * GEN.random() + minLW),
-              strokeStyle: this.color.getRandomShade(0.8).rgba()
+              strokeStyle: this.color.randomVariationHsl()
             };
             startPosition = {
               x: Math.floor(this.startPosition.x + pVar * GEN.random() - pVar/2),
@@ -778,7 +755,7 @@ var GEN;
             //
             env = {
               lineWidth: Math.floor((maxLW - minLW) * GEN.random() + minLW),
-              strokeStyle: this.color.getRandomShade(0.8).rgba()
+              strokeStyle: this.color.randomVariationHsl()
             };
             // note: following line will need full qualification if Fiber class def is moved elsewhere
             fiber = new Fiber(this.context2d, fiberParams, env);
@@ -876,7 +853,7 @@ var GEN;
         cp1Y = Math.floor(this.cp1Y + Math.random() * length * cpSkew - length * cpSkew / 2);
         cp2X = Math.floor(this.cp2X + Math.random() * length * cpSkew - length * cpSkew / 2);
         cp2Y = Math.floor(this.cp2Y + Math.random() * length * cpSkew - length * cpSkew / 2);
-        context.strokeStyle = (this.color.getRandomShade(0.8)).rgba();
+        context.strokeStyle = this.color.randomVariationHsl(0.4);
         context.lineWidth = Math.floor( Math.max(1, (this.lineWidth/12 - this.lineWidth/24) * Math.random() + this.lineWidth/24 ) );
         context.beginPath();
         context.moveTo(startX, startY);
@@ -929,7 +906,7 @@ var GEN;
       var rootColor = new GEN.Color(context.strokeStyle);  // TODO: GEN.Color should support all possible values of context.strokeStyle
       var mpVar, x, y, radius, startAngle, endAngle;
       for (var i=0; i<reps; i++) {
-        context.strokeStyle = (rootColor.getRandomShade(0.8)).rgba();
+        context.strokeStyle = rootColor.randomVariationHsl(0.4);
         context.lineWidth = Math.floor( Math.max(1, (originalLineWidth/5 - originalLineWidth/8) * Math.random() + originalLineWidth/8 ) );
         radius = Math.floor ( this.radius + ( (originalLineWidth - context.lineWidth) * Math.random() - (originalLineWidth / 2 - context.lineWidth / 2) ) );
         mpVar = (this.radius - radius) / 4 + (originalLineWidth - context.lineWidth) / 4;

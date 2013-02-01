@@ -121,7 +121,7 @@ var GEN;
             //
             env = {
               lineWidth: Math.floor((maxLW - minLW) * GEN.random() + minLW),
-              strokeStyle: this.color.getRandomShade(0.8).rgba()
+              strokeStyle: this.color.randomVariationHsl()
             };
             // note: following line will need full qualification if Fiber class def is moved elsewhere
             fiber = new Fiber(this.context2d, fiberParams, env);

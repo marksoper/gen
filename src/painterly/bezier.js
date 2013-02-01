@@ -94,7 +94,7 @@ var GEN;
             //
             env = {
               lineWidth: Math.floor((maxLW - minLW) * GEN.random() + minLW),
-              strokeStyle: this.color.getRandomShade(0.8).rgba()
+              strokeStyle: this.color.randomVariationHsl()
             };
             startPosition = {
               x: Math.floor(this.startPosition.x + pVar * GEN.random() - pVar/2),
