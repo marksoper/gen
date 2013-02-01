@@ -117,6 +117,14 @@ var GEN;
     };
 
     //
+    // helpers
+    //
+    Color.zeroPadToSix = function(s) {
+      while (s.length < 6) s = "0" + s;
+      return s;
+    };
+
+    //
     // default Color
     //
 
