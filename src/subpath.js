@@ -21,7 +21,7 @@ var GEN;
       this.params = params || [];
       this.env = env || {};
       this.color = color || new GEN.Color(env.strokeStyle);
-      this.startPosition = startPosition || {x: 0, y: 0};
+      this.startPosition = startPosition;
       this.lineWidth = env.lineWidth || this.defaultLineWidth || Subpath.defaultLineWidth;  // TODO: test this
       this.lineCap = env.lineCap || this.defaultLineCap || Subpath.defaultLineCap;
       this.begin();

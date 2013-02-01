@@ -62,8 +62,8 @@ var GEN;
         GEN.__extends(Subpath, _super);
 
         //
-        // params: [cp1x, cp1y, cp2x, cp2y, x, y]
-        // see https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Arc_and_quadratic_curves
+        // params: [x, y, radius, startAngle, endAngle, anticlockwise]
+        // https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Arcs
         //
         function Subpath(context2d, params, env, color, startPosition) {
           _super.call(this, context2d, params, env, color, startPosition);
@@ -71,37 +71,46 @@ var GEN;
 
         Subpath.prototype.to = function () {
           _super.prototype.to.call(this);
-          var length = Math.sqrt( Math.pow(this.params[4] - this.startPosition.x, 2) + Math.pow(this.params[5] - this.startPosition.y, 2) );
-          var reps = 32;
-          var minLW = 0.1 * this.lineWidth;
-          var maxLW = 0.3 * this.lineWidth;
-          var pVar = 0.0015 * length * this.lineWidth;
+          var fiberCount = 32;
+          var minLW = 0.125 * this.lineWidth;
+          var maxLW = 0.2 * this.lineWidth;
+          var rVar = 0.0015 * this.lineWidth;
           var cpVar = 0.0015 * length * this.lineWidth;
-          var fiber, fiberParams, env, startPosition;
+          var arcLength = this.params[4] - this.params[3];
+          var bisectAngle = 0.5 * arcLength;
+          var angleVar = 0.05 * arcLength;
+          //var lineWidth, lwDelta, radVar, minRadius, maxRadius, radius, mpDeltaMin, mpDeltaMax, fiber, fiberParams, env, startPosition;
           //
           // TODO: consider object pooling
           //
-          for (var i=0; i<reps; i++) {
+          for (var i=0; i<fiberCount; i++) {
             //
+            lineWidth = Math.floor( Math.max(1, GEN.random(minLW, maxLW)));
+            lwDelta = this.lineWidth - lineWidth;
+            radVar = lwDelta / 2;
+            minRad = this.params[2] - radVar;
+            maxRad = this.params[2] + radVar;
+            radius = Math.floor ( GEN.random(minRad, maxRad) );
+            mpDeltaMax = 0.125 * (this.params[2] - radius + lwDelta);
+            mpDeltaMin = 0 - mpVarMax;
+            fiberLength = arcLength * GEN.random();
+            startAngle = Math.max(this.params[3] + GEN.random(0-angleVAr, angleVar), bisectAngle - fiberLength);
+            endAngle = Math.min(this.params[4] + GEN.random(0-angleVAr, angleVar), bisectAngle + fiberLength);
             fiberParams = [
-              Math.floor(this.params[0] + GEN.random() * cpVar - cpVar / 2),
-              Math.floor(this.params[1] + GEN.random() * cpVar - cpVar / 2),
-              Math.floor(this.params[2] + GEN.random() * cpVar - cpVar / 2),
-              Math.floor(this.params[3] + GEN.random() * cpVar - cpVar / 2),
-              Math.floor(this.params[4] + GEN.random() * pVar - pVar / 2),
-              Math.floor(this.params[5] + GEN.random() * pVar - pVar / 2)
+              this.params[0] + GEN.random(mpDeltaMin, mpDeltaMax),
+              this.params[1] + GEN.random(mpDeltaMin, mpDeltaMax),
+              GEN.random(minRad, maxRad),
+              startAngle,
+              endAngle,
+              this.params[5]
             ];
             //
             env = {
               lineWidth: Math.floor((maxLW - minLW) * GEN.random() + minLW),
               strokeStyle: this.color.getRandomShade(0.8).rgba()
             };
-            startPosition = {
-              x: Math.floor(this.startPosition.x + pVar * GEN.random() - pVar/2),
-              y: Math.floor(this.startPosition.y + pVar * GEN.random() - pVar/2)
-            };
             // note: following line will need full qualification if Fiber class def is moved elsewhere
-            fiber = new Fiber(this.context2d, fiberParams, env, startPosition);
+            fiber = new Fiber(this.context2d, fiberParams, env);
             this.addFiber(fiber);
           }
 
@@ -122,17 +131,16 @@ var GEN;
 
     (function (Context) {
 
-      var arc = function(cp1x, cp1y, cp2x, cp2y, x, y) {
+      var arc = function(x, y, radius, startAngle, endAngle, anticlockwise) {
 
         var subpath = new Painterly.Arc.Subpath(
           this.context2d,
-          [cp1x, cp1y, cp2x, cp2y, x, y],
+          [x, y, radius, startAngle, endAngle, anticlockwise],
           {
             lineWidth: this.lineWidth,
             lineCap: this.lineCap
           },
-          this.color || new GEN.Color(this.strokeStyle),
-          this.currentPosition()
+          this.color || new GEN.Color(this.strokeStyle)
         );
         subpath.to();
         this.addToPath(subpath);

@@ -72,7 +72,7 @@ var GEN;
         Subpath.prototype.to = function () {
           _super.prototype.to.call(this);
           var length = Math.sqrt( Math.pow(this.params[4] - this.startPosition.x, 2) + Math.pow(this.params[5] - this.startPosition.y, 2) );
-          var reps = 32;
+          var fiberCount = 32;
           var minLW = 0.1 * this.lineWidth;
           var maxLW = 0.3 * this.lineWidth;
           var pVar = 0.0015 * length * this.lineWidth;
@@ -81,7 +81,7 @@ var GEN;
           //
           // TODO: consider object pooling
           //
-          for (var i=0; i<reps; i++) {
+          for (var i=0; i<fiberCount; i++) {
             //
             fiberParams = [
               Math.floor(this.params[0] + GEN.random() * cpVar - cpVar / 2),
