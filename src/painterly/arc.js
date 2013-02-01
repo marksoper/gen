@@ -76,8 +76,8 @@ var GEN;
           var rVar = 0.0015 * this.lineWidth;
           var cpVar = 0.0015 * length * this.lineWidth;
           var arcLength = this.params[4] - this.params[3];
-          var bisectAngle = 0.5 * arcLength;
-          var anglePointVar = 0.05 * arcLength;
+          var bisectAngle = 0.5 * arcLength + this.params[3];
+          var anglePointVar = 0 * arcLength;
           var lineWidth, lwDelta, radVar, minRad, maxRad, radius, mpDeltaMin, mpDeltaMax, fiberLength, startAngle, endAngle, fiber, fiberParams, env;
           //
           // TODO: consider object pooling
@@ -93,8 +93,13 @@ var GEN;
             mpDeltaMax = 0.125 * (this.params[2] - radius + lwDelta);
             mpDeltaMin = 0 - mpDeltaMax;
             fiberLength = arcLength * GEN.random();
-            startAngle = Math.max(this.params[3] + GEN.random(0-anglePointVar, anglePointVar), bisectAngle - fiberLength);
-            endAngle = Math.min(this.params[4] + GEN.random(0-anglePointVar, anglePointVar), bisectAngle + fiberLength);
+            if (this.params[5]) {
+              startAngle = this.params[3];
+              endAngle = this.params[4];
+            } else {
+              startAngle = Math.max(this.params[3] + GEN.random(0-anglePointVar, anglePointVar), bisectAngle - fiberLength);
+              endAngle = Math.min(this.params[4] + GEN.random(0-anglePointVar, anglePointVar), bisectAngle + fiberLength);
+            }
             fiberParams = [
               this.params[0] + GEN.random(mpDeltaMin, mpDeltaMax),
               this.params[1] + GEN.random(mpDeltaMin, mpDeltaMax),
