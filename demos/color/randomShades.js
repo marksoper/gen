@@ -1,5 +1,5 @@
 
-var mainRandomShades = function() {
+var mainRandomHsl = function() {
 
   // constrain colors for debugging
   //genColorKeywords = {"salmon": 0xFA8072, "white": 0xffffff, "black": 0x000000, "sandybrown": 0xF4A460, "seagreen": 0x2E8B57};
@@ -20,7 +20,7 @@ var mainRandomShades = function() {
 
   var hexColorStr;
   var color;
-  var shade;
+  var hsla;
   var y=document.getElementById("header").offsetHeight + 2*margin;
   var x=0;
 
@@ -57,8 +57,10 @@ var mainRandomShades = function() {
     // draw a strip of shades for that color
     //
     while (x < (canvas.width - 2*margin) ) {
-      shade = color.getRandomShade(0.9);
-      drawRect(x,y,shadeWidth,groupHeight,shade.rgba());
+      var variance = Math.min(1.0, x/(canvas.width - 2*margin));
+      console.log("variance: " + variance);
+      hsla = color.randomVariationHsl(variance);
+      drawRect(x,y,shadeWidth,groupHeight,hsla);
       x += shadeWidth;
     }
     x = 0;
@@ -70,4 +72,4 @@ var mainRandomShades = function() {
 
 };
 
-window.onload = mainRandomShades;
+window.onload = mainRandomHsl;
