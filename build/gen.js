@@ -349,7 +349,6 @@ var GEN;
       }
       this.a = this.a || Color.defaultA;
       this.randomShadeVariance = 0.4;
-      this.setHsl();
     }
 
     Color.prototype.rgba = function () {
