@@ -7,7 +7,7 @@ var mainArcPerformance = function() {
   var contextGen2d = canvasGen.getContext('2d');
   var painterly = new GEN.Painterly.Context(contextGen2d);
 
-  var testCount = 10;
+  var testCount = 500;
   var margin = 30;
   var lineWidth = 50;
 
@@ -47,7 +47,7 @@ var mainArcPerformance = function() {
       context2d.beginPath();
       context2d.strokeStyle = "#ff69b4";  // hotpink
       context2d.lineWidth = lineWidth;
-      context2d.arc(0.25*w, y+0.15*w, 0.2*w, 0.3*Math.PI, 1.5*Math.PI, false);
+      context2d.arc(0.25*w, y+0.15*w, 0.2*w, -0.25*Math.PI, 1.25*Math.PI);
       context2d.stroke();
       tDelta_2d += (Date.now() - tStart);
     };
@@ -57,7 +57,7 @@ var mainArcPerformance = function() {
       painterly.beginPath();
       painterly.strokeStyle = "#ff69b4";  // hotpink
       painterly.lineWidth = lineWidth;
-      painterly.arc(0.75*w, y+0.15*w, 0.2*w, 0.3*Math.PI, 1.5*Math.PI, false);
+      painterly.arc(0.75*w, y+0.15*w, 0.2*w, -0.25*Math.PI, 1.25*Math.PI);
       painterly.stroke();
       tDelta_gen += (Date.now() - tStart);
     };
