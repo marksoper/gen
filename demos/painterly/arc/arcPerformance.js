@@ -1,5 +1,5 @@
 
-var mainBezierPerformance = function() {
+var mainArcPerformance = function() {
 
   var canvas2d = document.getElementById('canvas2d');
   var context2d = canvas2d.getContext('2d');
@@ -9,7 +9,7 @@ var mainBezierPerformance = function() {
 
   var testCount = 500;
   var margin = 30;
-  var lineWidth = 100;
+  var lineWidth = 50;
 
   var resizeCanvas = function() {
     canvasGen.width = canvas2d.width  = window.innerWidth;
@@ -45,10 +45,9 @@ var mainBezierPerformance = function() {
     var drawContext2d = function(y) {
       var tStart = Date.now();
       context2d.beginPath();
-      context2d.moveTo(0.1*w, y + 2*margin);
       context2d.strokeStyle = "#ff69b4";  // hotpink
       context2d.lineWidth = lineWidth;
-      context2d.bezierCurveTo(0.25*w, y-0.1*w, 0.35*w, y + 0.1*w, 0.4*w, y + 0.2*w);
+      context2d.arc(0.25*w, y+0.15*w, 0.2*w, -0.25*Math.PI, 1.25*Math.PI);
       context2d.stroke();
       tDelta_2d += (Date.now() - tStart);
     };
@@ -56,10 +55,9 @@ var mainBezierPerformance = function() {
     var drawContextGen = function(y) {
       var tStart = Date.now();
       painterly.beginPath();
-      painterly.moveTo(5*w/8, y+2*margin);
       painterly.strokeStyle = "#ff69b4";  // hotpink
       painterly.lineWidth = lineWidth;
-      painterly.bezierCurveTo(0.75*w, y-0.1*w, 0.85*w, y + 0.1*w, 0.9*w, y + 0.2*w);
+      painterly.arc(0.75*w, y+0.15*w, 0.2*w, -0.25*Math.PI, 1.25*Math.PI);
       painterly.stroke();
       tDelta_gen += (Date.now() - tStart);
     };
@@ -110,6 +108,6 @@ var mainBezierPerformance = function() {
 
 };
 
-window.addEventListener("load", mainBezierPerformance);
+window.addEventListener("load", mainArcPerformance);
 
 
