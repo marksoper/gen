@@ -992,7 +992,8 @@ var GEN;
           var fiberCount = Math.round(this.fiberDensity * this.lineWidth);
           var minLW = 0.1 * this.lineWidth;
           var maxLW = 0.3 * this.lineWidth;
-          var pVar = 0.0015 * length * this.lineWidth;
+//          var pVar = 0.0015 * length * this.lineWidth;
+          var pVar = 0.55 * this.lineWidth;
           var fiber, fiberParams, env, startPosition;
           //
           // TODO: consider object pooling

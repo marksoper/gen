@@ -14,8 +14,8 @@ var mainBikeman = function() {
   var resize = function() {
     canvas.width = window.innerWidth - 1.5*margin;
     canvas.height = window.innerHeight - 1.2*margin;
-    grid.width = canvas.width;
-    grid.height = canvas.height;
+    grid.width = canvas.width - 2*margin;
+    grid.height = canvas.height - 2*margin;
   };
   resize();
 
@@ -28,19 +28,49 @@ var mainBikeman = function() {
   // ground
   //
 
-  var groundColor = genColorKeywords[randomColor()];
-  var groundPoints = {
-    start: new GEN.Point(-0.1, 0.75, grid),
-    end: new GEN.Point(1.1, 0.75, grid)
-
-  };
+  var groundColor = genColorKeywords["orange"];
+  var groundSegments = [
+    {
+      start: new GEN.Point(-0.1, 0.65, grid),
+      end: new GEN.Point(0.23, 0.85, grid)
+    },
+    {
+      start: new GEN.Point(0.38, 0.85, grid),
+      end: new GEN.Point(1.1, 0.6, grid)
+    },
+  ];
   var drawGround = function() {
     context.beginPath();
-    context.lineWidth = Math.floor(0.25 * grid.height);
-    context.fiberDensity = 2;
-    context.strokeStyle = "#" + GEN.Color.zeroPadToSix(genColorKeywords[randomColor()].toString(16));
-    context.moveTo(groundPoints.start.x(), groundPoints.start.y());
-    context.lineTo(groundPoints.end.x(), groundPoints.end.y());
+    groundSegments.forEach(function(seg) {
+      context.lineWidth = Math.floor(0.45 * grid.height);
+      context.fiberDensity = 2;
+      context.strokeStyle = "#" + GEN.Color.zeroPadToSix(groundColor.toString(16));
+      context.moveTo(seg.start.x(), seg.start.y());
+      context.lineTo(seg.end.x(), seg.end.y());
+    });
+    context.stroke();
+  };
+
+  //
+  // tar
+  //
+
+  var tarColor = genColorKeywords["black"];
+  var tarSegments = [
+    {
+      start: new GEN.Point(-0.1, 0.85, grid),
+      end: new GEN.Point(1.1, 0.85, grid)
+    }
+  ];
+  var drawTar = function() {
+    context.beginPath();
+    tarSegments.forEach(function(seg) {
+      context.lineWidth = Math.floor(0.75 * grid.height);
+      context.fiberDensity = 2;
+      context.strokeStyle = "#" + GEN.Color.zeroPadToSix(tarColor.toString(16));
+      context.moveTo(seg.start.x(), seg.start.y());
+      context.lineTo(seg.end.x(), seg.end.y());
+    });
     context.stroke();
   };
 
@@ -88,6 +118,7 @@ var mainBikeman = function() {
   */
 
   var draw = function() {
+    drawTar();
     drawGround();
     /*
     var part;
