@@ -39,6 +39,89 @@ var GEN;
 
 
 //
+//  grid.js - defines a 2d rectangular area
+//
+//  with width and height
+//  against which proportional x,y calcs can be done
+//
+
+
+var GEN;
+
+(function (GEN) {
+
+  var Grid = (function () {
+
+    function Grid(origin, width, height) {
+      this.origin = origin || { x: 0, y: 0 };
+      this.width = width;
+      this.height = height;
+    }
+
+    return Grid;
+
+  })();
+
+  GEN.Grid = Grid;
+  
+})(GEN || (GEN = {}));
+
+
+
+//
+//  point.js - defines a class Gen.Point
+//
+//  a 2d point with x and y coords
+//
+
+var GEN;
+
+(function (GEN) {
+
+  var Point = (function () {
+
+    function Point(x,y,grid) {
+      if (grid) {
+        this.grid = grid;
+      }
+      this._x = x;
+      this._y = y;
+    }
+
+    Point.prototype.x = function() {
+      if (this.grid) {
+        return Math.floor(this.grid.origin.x + this._x * this.grid.width);
+      } else {
+        return _x;
+      }
+    };
+
+    Point.prototype.y = function() {
+      if (this.grid) {
+        return Math.floor(this.grid.origin.y + this._y * this.grid.height);
+      } else {
+        return _y;
+      }
+    };
+
+    Point.prototype.coords = function() {
+      return {
+        x: this.x(),
+        y: this.y()
+      };
+    };
+
+    return Point;
+
+  })();
+
+  GEN.Point = Point;
+  
+})(GEN || (GEN = {}));
+
+
+
+//
 //  fiber.js - defines a class Gen.Fiber
 //  which is the atomic unit of drawing
 //  many Gen.Fiber objects are combined to produce a Gen.Subpath object (lines, curves, arcs, etc.) in Gen.Context
@@ -408,6 +491,14 @@ var GEN;
       var l = GEN.random(this.l - vOver2, this.l + vOver2);
       var a = GEN.random(0.999, 1);  // TODO: re-evaluate best val here
       return this.hsla(undefined,undefined,l,a);
+    };
+
+    //
+    // helpers
+    //
+    Color.zeroPadToSix = function(s) {
+      while (s.length < 6) s = "0" + s;
+      return s;
     };
 
     //

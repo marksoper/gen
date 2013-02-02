@@ -14,7 +14,7 @@ var GEN;
 
   var Grid = (function () {
 
-    function Grid(originX, width, height) {
+    function Grid(origin, width, height) {
       this.origin = origin || { x: 0, y: 0 };
       this.width = width;
       this.height = height;

@@ -22,7 +22,7 @@ var GEN;
 
     Point.prototype.x = function() {
       if (this.grid) {
-        return Math.floor(this.grid.origin.x + this._x * grid.width);
+        return Math.floor(this.grid.origin.x + this._x * this.grid.width);
       } else {
         return _x;
       }
@@ -30,7 +30,7 @@ var GEN;
 
     Point.prototype.y = function() {
       if (this.grid) {
-        return Math.floor(this.grid.origin.y + this._y * grid.height);
+        return Math.floor(this.grid.origin.y + this._y * this.grid.height);
       } else {
         return _y;
       }

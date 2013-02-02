@@ -9,12 +9,13 @@ var mainBikeman = function() {
     x: margin,
     y: margin
   };
-  var grid = new GEN.Grid(origin, );
-
+  var grid = new GEN.Grid(origin);
 
   var resize = function() {
     canvas.width  = window.innerHeight;
     canvas.height = window.innerWidth;
+    grid.width = window.innerWidth;
+    grid.height = window.innerHeight;
   };
   resize();
 
@@ -23,9 +24,33 @@ var mainBikeman = function() {
     return colors[Math.floor(colors.length * Math.random())];
   };
 
-  var wheelColor = genColorKeywords[randomColor()];
-  //var bodyColor = genColorKeywords["chocolate"];
+  //
+  // ground
+  //
+
   var groundColor = genColorKeywords[randomColor()];
+  var groundPoints = {
+    start: new GEN.Point(0, 0.75, grid),
+    end: new GEN.Point(1.0, 0.75, grid)
+
+  };
+  var drawGround = function() {
+    context.beginPath();
+    context.lineWidth = 0.1 * grid.height;
+    context.strokeStyle = GEN.Color.zeroPadToSix(randomColor());
+    context.moveTo(groundPoints.start.x(), groundPoints.start.y());
+    context.lineTo(groundPoints.end.x(), groundPoints.end.y());
+    context.stroke();
+  };
+
+
+  //
+  // wheels
+  //
+
+  /*
+
+  var wheelColor = genColorKeywords[randomColor()];
 
   var wheels = {
     "frontWheel": {
@@ -59,7 +84,11 @@ var mainBikeman = function() {
     };
   };
 
+  */
+
   var draw = function() {
+    drawGround();
+    /*
     var part;
     var partsNow = parts();
     for (var partName in partsNow) {
@@ -70,6 +99,7 @@ var mainBikeman = function() {
       console.log("drawing: " + partName);
       part.shape.draw(context);
     }
+    */
   };
   draw();
 
