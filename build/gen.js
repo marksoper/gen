@@ -983,7 +983,7 @@ var GEN;
         // see https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Lines
         //
         function Subpath(context2d, params, env, genParams) {
-          _super.call(this, context2d, params, genParams);
+          _super.call(this, context2d, params, env, genParams);
         }
 
         Subpath.prototype.to = function () {
@@ -1050,10 +1050,11 @@ var GEN;
           },
           {
             color: this.color || new GEN.Color(this.strokeStyle),
-            currentPosition: this.currentPosition()
+            startPosition: this.currentPosition(),
+            fiberDensity: this.fiberDensity
           }
         );
-        subpath.to(this.fiberDensity);
+        subpath.to();
         this.addToPath(subpath);
 
       };

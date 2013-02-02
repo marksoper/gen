@@ -37,6 +37,7 @@ var mainBikeman = function() {
   var drawGround = function() {
     context.beginPath();
     context.lineWidth = Math.floor(0.25 * grid.height);
+    context.fiberDensity = 2;
     context.strokeStyle = "#" + GEN.Color.zeroPadToSix(genColorKeywords[randomColor()].toString(16));
     context.moveTo(groundPoints.start.x(), groundPoints.start.y());
     context.lineTo(groundPoints.end.x(), groundPoints.end.y());
