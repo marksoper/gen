@@ -40,8 +40,9 @@ var GEN;
 
       GEN.__extends(Context, _super);
 
-      function Context(context2d) {
+      function Context(context2d, fiberDensity) {
         _super.call(this, context2d);
+        this.fiberDensity = fiberDensity || 1;  // fibers per lineWidth pixel
       }
 
       return Context;

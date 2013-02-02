@@ -14,12 +14,20 @@ var GEN;
 (function (GEN) {
 
   var Fiber = (function () {
-
-    function Fiber(context2d, params, env, startPosition) {
+    //
+    // params - the exact params for the native context function call
+    // env - native context properties like lineWidth, strokeStyle, etc.
+    // genParams - extension properties only present in Gen.js
+    //
+    //
+    // TODO: maybe params should be handled consistently with Subpath
+    //
+    function Fiber(context2d, params, env, genParams) {
       this.context2d = context2d;
       this.params = params;
       this.env = env;
-      this.startPosition = startPosition;
+      genParams = genParams || {};
+      this.startPosition = genParams.startPosition;
     }
 
     Fiber.prototype.context2dBeginPath = function() {

@@ -12,10 +12,10 @@ var mainBikeman = function() {
   var grid = new GEN.Grid(origin);
 
   var resize = function() {
-    canvas.width  = window.innerHeight;
-    canvas.height = window.innerWidth;
-    grid.width = window.innerWidth;
-    grid.height = window.innerHeight;
+    canvas.width = window.innerWidth - 1.5*margin;
+    canvas.height = window.innerHeight - 1.2*margin;
+    grid.width = canvas.width;
+    grid.height = canvas.height;
   };
   resize();
 
@@ -30,14 +30,14 @@ var mainBikeman = function() {
 
   var groundColor = genColorKeywords[randomColor()];
   var groundPoints = {
-    start: new GEN.Point(0, 0.75, grid),
-    end: new GEN.Point(1.0, 0.75, grid)
+    start: new GEN.Point(-0.1, 0.75, grid),
+    end: new GEN.Point(1.1, 0.75, grid)
 
   };
   var drawGround = function() {
     context.beginPath();
-    context.lineWidth = 0.1 * grid.height;
-    context.strokeStyle = GEN.Color.zeroPadToSix(randomColor());
+    context.lineWidth = Math.floor(0.25 * grid.height);
+    context.strokeStyle = "#" + GEN.Color.zeroPadToSix(genColorKeywords[randomColor()].toString(16));
     context.moveTo(groundPoints.start.x(), groundPoints.start.y());
     context.lineTo(groundPoints.end.x(), groundPoints.end.y());
     context.stroke();

@@ -64,13 +64,13 @@ var GEN;
         // params: [x, y, radius, startAngle, endAngle, anticlockwise]
         // https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Arcs
         //
-        function Subpath(context2d, params, env, color, startPosition) {
-          _super.call(this, context2d, params, env, color, startPosition);
+        function Subpath(context2d, params, env, genParams) {
+          _super.call(this, context2d, params, env, genParams);
         }
 
         Subpath.prototype.to = function () {
           _super.prototype.to.call(this);
-          var fiberCount = 24;
+          var fiberCount = Math.round(this.fiberDensity * this.lineWidth);  // 24
           var minLW = 0.125 * this.lineWidth;
           var maxLW = 0.2 * this.lineWidth;
           var rVar = 0.0015 * this.lineWidth;
@@ -154,7 +154,9 @@ var GEN;
             lineWidth: this.lineWidth,
             lineCap: this.lineCap
           },
-          this.color || new GEN.Color(this.strokeStyle)
+          {
+            color: this.color || new GEN.Color(this.strokeStyle)
+          }
         );
         subpath.to();
         this.addToPath(subpath);

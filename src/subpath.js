@@ -11,17 +11,20 @@ var GEN;
 (function (GEN) {
 
   var Subpath = (function () {
-
     //
-    // needs to be called with all args for now
-    // TODO: figure out a better multi-ariety parameterization
+    // params - the exact params for the native context function call
+    // env - native context properties like lineWidth, strokeStyle, etc.
+    // genParams - extension properties only present in Gen.js
     //
-    function Subpath(context2d, params, env, color, startPosition) {
+    //
+    function Subpath(context2d, params, env, genParams) {
       this.context2d = context2d;
       this.params = params || [];
-      this.env = env || {};
-      this.color = color || new GEN.Color(env.strokeStyle);
-      this.startPosition = startPosition;
+      env = env || {};
+      genParams = genParams || {};
+      this.color = genParams.color || new GEN.Color(env.strokeStyle);
+      this.startPosition = genParams.startPosition || this.defaultStartPosition || Subpath.defaultStartPostion;
+      this.fiberDensity = genParams.fiberDensity || this.defaultFiberDensity || Subpath.defaultFiberDensity;
       this.lineWidth = env.lineWidth || this.defaultLineWidth || Subpath.defaultLineWidth;  // TODO: test this
       this.lineCap = env.lineCap || this.defaultLineCap || Subpath.defaultLineCap;
       this.begin();
@@ -45,6 +48,8 @@ var GEN;
       this.fibers = [];
     };
 
+    Subpath.defaultStartPostion = { x: 0, y: 0 };
+    Subpath.defaultFiberDensity = 1;
     Subpath.defaultLineWidth = 10;
     Subpath.defaultLineCap = "round";
 
