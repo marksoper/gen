@@ -135,12 +135,20 @@ var GEN;
 (function (GEN) {
 
   var Fiber = (function () {
-
-    function Fiber(context2d, params, env, startPosition) {
+    //
+    // params - the exact params for the native context function call
+    // env - native context properties like lineWidth, strokeStyle, etc.
+    // genParams - extension properties only present in Gen.js
+    //
+    //
+    // TODO: maybe params should be handled consistently with Subpath
+    //
+    function Fiber(context2d, params, env, genParams) {
       this.context2d = context2d;
       this.params = params;
       this.env = env;
-      this.startPosition = startPosition;
+      genParams = genParams || {};
+      this.startPosition = genParams.startPosition;
     }
 
     Fiber.prototype.context2dBeginPath = function() {
@@ -203,17 +211,20 @@ var GEN;
 (function (GEN) {
 
   var Subpath = (function () {
-
     //
-    // needs to be called with all args for now
-    // TODO: figure out a better multi-ariety parameterization
+    // params - the exact params for the native context function call
+    // env - native context properties like lineWidth, strokeStyle, etc.
+    // genParams - extension properties only present in Gen.js
     //
-    function Subpath(context2d, params, env, color, startPosition) {
+    //
+    function Subpath(context2d, params, env, genParams) {
       this.context2d = context2d;
       this.params = params || [];
-      this.env = env || {};
-      this.color = color || new GEN.Color(env.strokeStyle);
-      this.startPosition = startPosition;
+      env = env || {};
+      genParams = genParams || {};
+      this.color = genParams.color || new GEN.Color(env.strokeStyle);
+      this.startPosition = genParams.startPosition || this.defaultStartPosition || Subpath.defaultStartPostion;
+      this.fiberDensity = genParams.fiberDensity || this.defaultFiberDensity || Subpath.defaultFiberDensity;
       this.lineWidth = env.lineWidth || this.defaultLineWidth || Subpath.defaultLineWidth;  // TODO: test this
       this.lineCap = env.lineCap || this.defaultLineCap || Subpath.defaultLineCap;
       this.begin();
@@ -237,6 +248,8 @@ var GEN;
       this.fibers = [];
     };
 
+    Subpath.defaultStartPostion = { x: 0, y: 0 };
+    Subpath.defaultFiberDensity = 1;
     Subpath.defaultLineWidth = 10;
     Subpath.defaultLineCap = "round";
 
@@ -611,8 +624,8 @@ var GEN;
         // params: [cp1x, cp1y, cp2x, cp2y, x, y]
         // see https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Bezier_and_quadratic_curves
         //
-        function Fiber(context2d, params, env, startPosition) {
-          _super.call(this, context2d, params, env, startPosition);
+        function Fiber(context2d, params, env, genParams) {
+          _super.call(this, context2d, params, env, genParams);
         }
 
         Fiber.prototype.draw = function() {
@@ -642,14 +655,14 @@ var GEN;
         // params: [cp1x, cp1y, cp2x, cp2y, x, y]
         // see https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Bezier_and_quadratic_curves
         //
-        function Subpath(context2d, params, env, color, startPosition) {
-          _super.call(this, context2d, params, env, color, startPosition);
+        function Subpath(context2d, params, env, genParams) {
+          _super.call(this, context2d, params, env, genParams);
         }
 
         Subpath.prototype.to = function () {
           _super.prototype.to.call(this);
           var length = Math.sqrt( Math.pow(this.params[4] - this.startPosition.x, 2) + Math.pow(this.params[5] - this.startPosition.y, 2) );
-          var fiberCount = 32;
+          var fiberCount = Math.round(this.fiberDensity * this.lineWidth);  // 32
           var minLW = 0.1 * this.lineWidth;
           var maxLW = 0.3 * this.lineWidth;
           var pVar = 0.0015 * length * this.lineWidth;
@@ -678,7 +691,12 @@ var GEN;
               y: Math.floor(this.startPosition.y + pVar * GEN.random() - pVar/2)
             };
             // note: following line will need full qualification if Fiber class def is moved elsewhere
-            fiber = new Fiber(this.context2d, fiberParams, env, startPosition);
+            fiber = new Fiber(
+              this.context2d,
+              fiberParams,
+              env,
+              { startPosition: startPosition }
+            );
             this.addFiber(fiber);
           }
 
@@ -708,8 +726,10 @@ var GEN;
             lineWidth: this.lineWidth,
             lineCap: this.lineCap
           },
-          this.color || new GEN.Color(this.strokeStyle),
-          this.currentPosition()
+          {
+            color: this.color || new GEN.Color(this.strokeStyle),
+            startPosition: this.currentPosition()
+          }
         );
         subpath.to();
         this.addToPath(subpath);
@@ -789,13 +809,13 @@ var GEN;
         // params: [x, y, radius, startAngle, endAngle, anticlockwise]
         // https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Arcs
         //
-        function Subpath(context2d, params, env, color, startPosition) {
-          _super.call(this, context2d, params, env, color, startPosition);
+        function Subpath(context2d, params, env, genParams) {
+          _super.call(this, context2d, params, env, genParams);
         }
 
         Subpath.prototype.to = function () {
           _super.prototype.to.call(this);
-          var fiberCount = 24;
+          var fiberCount = Math.round(this.fiberDensity * this.lineWidth);  // 24
           var minLW = 0.125 * this.lineWidth;
           var maxLW = 0.2 * this.lineWidth;
           var rVar = 0.0015 * this.lineWidth;
@@ -879,7 +899,9 @@ var GEN;
             lineWidth: this.lineWidth,
             lineCap: this.lineCap
           },
-          this.color || new GEN.Color(this.strokeStyle)
+          {
+            color: this.color || new GEN.Color(this.strokeStyle)
+          }
         );
         subpath.to();
         this.addToPath(subpath);
@@ -929,8 +951,8 @@ var GEN;
         // params: [x, y]
         // see https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Lines
         //
-        function Fiber(context2d, params, env, startPosition) {
-          _super.call(this, context2d, params, env, startPosition);
+        function Fiber(context2d, params, env, genParams) {
+          _super.call(this, context2d, params, env, genParams);
         }
 
         Fiber.prototype.draw = function() {
@@ -960,8 +982,8 @@ var GEN;
         // params: [x, y]
         // see https://developer.mozilla.org/en-US/docs/HTML/Canvas/Tutorial/Drawing_shapes#Lines
         //
-        function Subpath(context2d, params, env, color, startPosition) {
-          _super.call(this, context2d, params, env, color, startPosition);
+        function Subpath(context2d, params, env, genParams) {
+          _super.call(this, context2d, params, genParams);
         }
 
         Subpath.prototype.to = function () {
@@ -991,7 +1013,12 @@ var GEN;
               y: Math.floor(this.startPosition.y + pVar * GEN.random() - pVar/2)
             };
             // note: following line will need full qualification if Fiber class def is moved elsewhere
-            fiber = new Fiber(this.context2d, fiberParams, env, startPosition);
+            fiber = new Fiber(
+              this.context2d,
+              fiberParams,
+              env,
+              { startPosition: startPosition }
+            );
             this.addFiber(fiber);
           }
 
@@ -1021,10 +1048,12 @@ var GEN;
             lineWidth: this.lineWidth,
             lineCap: this.lineCap
           },
-          this.color || new GEN.Color(this.strokeStyle),
-          this.currentPosition()
+          {
+            color: this.color || new GEN.Color(this.strokeStyle),
+            currentPosition: this.currentPosition()
+          }
         );
-        subpath.to();
+        subpath.to(this.fiberDensity);
         this.addToPath(subpath);
 
       };

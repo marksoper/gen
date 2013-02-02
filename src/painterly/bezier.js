@@ -138,7 +138,7 @@ var GEN;
           },
           {
             color: this.color || new GEN.Color(this.strokeStyle),
-            currentPosition: this.currentPosition()
+            startPosition: this.currentPosition()
           }
         );
         subpath.to();
