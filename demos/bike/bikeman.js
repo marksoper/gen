@@ -24,6 +24,26 @@ var mainBikeman = function() {
     return colors[Math.floor(colors.length * Math.random())];
   };
 
+
+
+  //
+  // sky
+  //
+
+  var skyColor = genColorKeywords["lightblue"];
+  var drawSky= function() {
+    context.lineWidth = Math.floor(0.15 * grid.height);
+    context.fiberDensity = 2;
+    context.strokeStyle = "#" + GEN.Color.zeroPadToSix(skyColor.toString(16));
+    context.beginPath();
+    for (var i=-1; i<10; i++) {
+      context.moveTo(Math.floor(-0.1*grid.width), Math.floor(0.1*i*grid.height));
+      context.lineTo(Math.floor(1.1*grid.width), Math.floor(0.1*i*grid.height));
+    }
+    context.stroke();
+  };
+
+
   //
   // ground
   //
@@ -31,13 +51,13 @@ var mainBikeman = function() {
   var groundColor = genColorKeywords["orange"];
   var groundSegments = [
     {
-      start: new GEN.Point(-0.1, 0.65, grid),
-      end: new GEN.Point(0.23, 0.85, grid)
+      start: new GEN.Point(-0.1, 0.7, grid),
+      end: new GEN.Point(0.3, 1.1, grid)
     },
     {
-      start: new GEN.Point(0.38, 0.85, grid),
-      end: new GEN.Point(1.1, 0.6, grid)
-    },
+      start: new GEN.Point(0, 1.2, grid),
+      end: new GEN.Point(1.1, 0.65, grid)
+    }
   ];
   var drawGround = function() {
     context.beginPath();
@@ -58,14 +78,14 @@ var mainBikeman = function() {
   var tarColor = genColorKeywords["black"];
   var tarSegments = [
     {
-      start: new GEN.Point(-0.1, 0.85, grid),
-      end: new GEN.Point(1.1, 0.85, grid)
+      start: new GEN.Point(-0.1, 0.95, grid),
+      end: new GEN.Point(1.1, 0.95, grid)
     }
   ];
   var drawTar = function() {
     context.beginPath();
     tarSegments.forEach(function(seg) {
-      context.lineWidth = Math.floor(0.75 * grid.height);
+      context.lineWidth = Math.floor(0.55 * grid.height);
       context.fiberDensity = 2;
       context.strokeStyle = "#" + GEN.Color.zeroPadToSix(tarColor.toString(16));
       context.moveTo(seg.start.x(), seg.start.y());
@@ -81,22 +101,22 @@ var mainBikeman = function() {
 
   var wheelColor = {
     front: genColorKeywords["orangered"],
-    rear: genColorKeywords["sienna"]
+    rear: genColorKeywords["orangered"]
   };
   var wheelSegments = {
     front: {
-      mp: new GEN.Point(0.5,0.5,grid),
-      radius: 0.2
+      mp: new GEN.Point(0.45,0.64,grid),
+      radius: 0.15
     },
     rear: {
-      mp: new GEN.Point(0.75,0.4,grid),
-      radius: 0.2
+      mp: new GEN.Point(0.75,0.48,grid),
+      radius: 0.15
     }
   };
   var drawWheel = {
     front: function() {
       context.beginPath();
-      context.lineWidth = Math.floor(0.1 * grid.height);
+      context.lineWidth = Math.floor(0.05 * grid.height);
       context.fiberDensity = 2;
       context.strokeStyle = "#" + GEN.Color.zeroPadToSix(wheelColor.front.toString(16));
       context.arc(
@@ -110,7 +130,7 @@ var mainBikeman = function() {
     },
     rear: function() {
       context.beginPath();
-      context.lineWidth = Math.floor(0.1 * grid.height);
+      context.lineWidth = Math.floor(0.05 * grid.height);
       context.fiberDensity = 2;
       context.strokeStyle = "#" + GEN.Color.zeroPadToSix(wheelColor.rear.toString(16));
       context.arc(
@@ -173,6 +193,7 @@ var mainBikeman = function() {
   */
 
   var draw = function() {
+    drawSky();
     drawWheels();
     drawTar();
     drawGround();
