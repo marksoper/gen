@@ -151,64 +151,49 @@ var mainBikeman = function() {
 
 
   //
-  // wheels
+  // body
   //
 
-  /*
+  var bodyColor = genColorKeywords["darkslateblue"];
 
-  var wheelColor = genColorKeywords[randomColor()];
+  var bodyJoints = {
+    toe: new GEN.Point(0.66, 0.54, grid),
+    heel: new GEN.Point(0.55, 0.58, grid)
+  };
 
-  var wheels = {
-    "frontWheel": {
-      type: "arc",
-      params: {
-        x: function() {
-
-        }
-        y:
-        radius:
-        startAngle:
-        endAngle:
-        anticlockwise:
-      },
-      shape: new GEN.Arc(0.78*dim, 0.66*dim, 0.17*dim, 0, Math.PI * 2),
-      color: wheelColor,
-      lineWidth: 0.07*dim
-    },
-    "rearWheel": {
-      shape: new GEN.Arc(0.22*dim, 0.69*dim, 0.17*dim, 0, Math.PI * 2),
-      color: wheelColor,
-      lineWidth: 0.07*dim
+  var bodySegments = [
+    {
+      start: "toe",
+      end: "heel",
+      cp1: new GEN.Point(0.62, 0.54, grid),
+      cp2: new GEN.Point(0.57, 0.58, grid)
     }
+  ];
+
+  var drawBody = function() {
+    context.beginPath();
+    context.lineWidth = Math.floor(0.10 * grid.height);
+    context.fiberDensity = 2;
+    context.strokeStyle = "#" + GEN.Color.zeroPadToSix(bodyColor.toString(16));
+    bodySegments.forEach(function(seg) {
+      context.moveTo(bodyJoints[seg.start].x(), bodyJoints[seg.start].y());
+      context.bezierCurveTo(seg.cp1.x(), seg.cp2.y(), seg.cp2.x(), seg.cp2.y(), bodyJoints[seg.end].x(), bodyJoints[seg.end].y() );
+    });
+    context.stroke();
   };
 
-  var ground = function() {
-    return {
-      shape: new GEN.Stroke(0, dim, dim, 0.93*dim, -Math.PI/12),
-      color: groundColor,
-      lineWidth: 0.2*dim
-    };
-  };
 
-  */
+
+  //
+  // main draw
+  //
 
   var draw = function() {
     drawSky();
     drawWheels();
     drawTar();
     drawGround();
-    /*
-    var part;
-    var partsNow = parts();
-    for (var partName in partsNow) {
-      part = partsNow[partName];
-      hexColorStr = zeroPadToSix(part.color.toString(16));
-      context.strokeStyle = "#" + hexColorStr;
-      context.lineWidth = part.lineWidth;
-      console.log("drawing: " + partName);
-      part.shape.draw(context);
-    }
-    */
+    drawBody();
   };
   draw();
 
