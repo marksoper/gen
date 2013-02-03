@@ -86,17 +86,17 @@ var mainBikeman = function() {
   var wheelSegments = {
     front: {
       mp: new GEN.Point(0.5,0.5,grid),
-      radius: 0.1
+      radius: 0.2
     },
     rear: {
       mp: new GEN.Point(0.75,0.4,grid),
-      radius: 0.1
+      radius: 0.2
     }
   };
   var drawWheel = {
     front: function() {
       context.beginPath();
-      context.lineWidth = Math.floor(0.05 * grid.height);
+      context.lineWidth = Math.floor(0.1 * grid.height);
       context.fiberDensity = 2;
       context.strokeStyle = "#" + GEN.Color.zeroPadToSix(wheelColor.front.toString(16));
       context.arc(
@@ -110,7 +110,7 @@ var mainBikeman = function() {
     },
     rear: function() {
       context.beginPath();
-      context.lineWidth = Math.floor(0.05 * grid.height);
+      context.lineWidth = Math.floor(0.1 * grid.height);
       context.fiberDensity = 2;
       context.strokeStyle = "#" + GEN.Color.zeroPadToSix(wheelColor.rear.toString(16));
       context.arc(
