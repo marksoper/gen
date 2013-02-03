@@ -19,7 +19,7 @@ var mainBikeman = function() {
   };
   resize();
 
-  var colors = ["aqua", "black", "brown", "coral", "crimson", "darkslateblue", "deeppink", "green", "indigo", "lightseagreen", "orangered", "orange", "purple", "steelblue", "teal", "sienna"];
+  var colors = ["aqua", "black", "brown", "coral", "crimson", "darkslateblue", "deeppink", "green", "indigo", "lightseagreen", "crimson", "orange", "purple", "steelblue", "teal", "sienna"];
   var randomColor = function() {
     return colors[Math.floor(colors.length * Math.random())];
   };
@@ -100,8 +100,8 @@ var mainBikeman = function() {
   //
 
   var wheelColor = {
-    front: genColorKeywords["orangered"],
-    rear: genColorKeywords["orangered"]
+    front: genColorKeywords["maroon"],
+    rear: genColorKeywords["maroon"]
   };
   var wheelSegments = {
     front: {
