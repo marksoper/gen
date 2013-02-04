@@ -66,9 +66,7 @@ var mainBikeman = function() {
   resize();
 
   var clearContext = function(context) {
-    context.context2d.save();
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    context.context2d.restore();
   };
 
   var colors = ["aqua", "black", "brown", "coral", "crimson", "darkslateblue", "deeppink", "green", "indigo", "lightseagreen", "crimson", "orange", "purple", "steelblue", "teal", "sienna"];
@@ -118,6 +116,7 @@ var mainBikeman = function() {
 
   var t = 0;
   var drawLegs = function() {
+    clearContext(legsContext.context2d);
     legsContext.beginPath();
     legsContext.lineWidth = Math.floor(0.10 * mainGrid.height);
     legsContext.fiberDensity = 2;
