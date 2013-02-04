@@ -1,6 +1,9 @@
 
 var mainBikeman = function() {
 
+
+  /*
+
   var mainCanvas = document.getElementById('mainCanvas');
   var mainContext = new GEN.Painterly.Context((mainCanvas.getContext('2d')));
 
@@ -30,11 +33,111 @@ var mainBikeman = function() {
   };
   resize();
 
+  */
+
+
+  var mainCanvas = document.getElementById('mainCanvas');
+  var mainContext = new GEN.Painterly.Context((mainCanvas.getContext('2d')));
+
+  var legsCanvas = document.getElementById('legsCanvas');
+  var legsContext = new GEN.Painterly.Context((legsCanvas.getContext('2d')));
+  // TODO: build rotate into the GEN context
+  legsContext.context2d.translate(0.5*legsCanvas.width, 0.5*legsCanvas.height);
+  legsContext.context2d.rotate(Math.PI);
+
+  var margin = 20;
+  var mainOrigin = {
+    x: margin,
+    y: margin
+  };
+  var mainGrid = new GEN.Grid(mainOrigin);
+
+  var legsGrid = new GEN.Grid();
+
+  var resize = function() {
+    [mainCanvas, legsCanvas].forEach(function(canvas) {
+      canvas.width = window.innerWidth - 0.8*margin;
+      canvas.height = window.innerHeight - 1.2*margin;
+    });
+    //
+    mainGrid.width = mainCanvas.width - 2*margin;
+    mainGrid.height = mainCanvas.height - 2*margin;
+    legsGrid.origin = { x: 0.5*mainGrid.width, y: 0.5*mainGrid.height };
+    legsGrid.width = 0.2*legsCanvas.width;
+    legsGrid.height = 1.66*legsGrid.width;
+  };
+  resize();
+
+  var clearContext = function(context) {
+    context.context2d.save();
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    context.context2d.restore();
+  };
+
   var colors = ["aqua", "black", "brown", "coral", "crimson", "darkslateblue", "deeppink", "green", "indigo", "lightseagreen", "crimson", "orange", "purple", "steelblue", "teal", "sienna"];
   var randomColor = function() {
     return colors[Math.floor(colors.length * Math.random())];
   };
 
+
+  //
+  // legs
+  //
+
+  var legsColor = genColorKeywords["darkslateblue"];
+
+  var hipJoint = new GEN.Point(0, 0, legsGrid);
+  var legJoints = {
+    hip: [
+      hipJoint,
+      hipJoint,
+      hipJoint,
+      hipJoint
+    ],
+    knee: [
+      new GEN.Point(1.0, 0, legsGrid),
+      new GEN.Point(1.0, 0.2, legsGrid),
+      new GEN.Point(0.83, 0.4, legsGrid),
+      new GEN.Point(0.83, 0.3, legsGrid)
+    ],
+    ankle: [
+      new GEN.Point(0.666, 0.6, legsGrid),
+      new GEN.Point(1.0, 0.8, legsGrid),
+      new GEN.Point(0.66, 1.0, legsGrid),
+      new GEN.Point(0.33, 0.8, legsGrid)
+    ]
+  };
+
+  var legSegments = [
+    {
+      start: "hip",
+      end: "knee"
+    },
+    {
+      start: "knee",
+      end: "ankle"
+    }
+  ];
+
+  var t = 0;
+  var drawLegs = function() {
+    //clearContext(legsContext);
+    legsContext.beginPath();
+    //legsContext.context2d.save();
+    legsContext.context2d.translate(0.5*legsCanvas.width, 0.5*legsCanvas.height);
+    legsContext.context2d.rotate(0.05*Math.PI);
+    //legsContext.context2d.restore();
+    legsContext.lineWidth = Math.floor(0.10 * mainGrid.height);
+    legsContext.fiberDensity = 2;
+    legsContext.strokeStyle = "#" + GEN.Color.zeroPadToSix(legsColor.toString(16));
+    legSegments.forEach(function(seg) {
+      legsContext.moveTo(legJoints[seg.start][t%4].x(), legJoints[seg.start][t%4].y());
+      legsContext.lineTo(legJoints[seg.end][t%4].x(), legJoints[seg.end][t%4].y() );
+    });
+    legsContext.stroke();
+    t += 1;
+    setTimeout(drawLegs, 200);
+  };
 
 
   //
@@ -205,6 +308,7 @@ var mainBikeman = function() {
     drawTar();
     drawGround();
     drawBody();
+    drawLegs();
   };
   draw();
 
