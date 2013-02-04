@@ -322,6 +322,7 @@ var GEN;
 
     function Context(context2d) {
       this.context2d = context2d;
+      this.canvas = context2d.canvas;
       this._currentPosition = {x: 0, y: 0};
       this._path = new GEN.Path(context2d);
     }
@@ -359,6 +360,10 @@ var GEN;
     Context.prototype.stroke = function() {
       // TODO: should probably take an optional path arg
       this._path.stroke();
+    };
+
+    Context.prototype.clearRect = function() {
+      this.context2d.clearRect.apply(this.context2d, arguments);
     };
 
     return Context;

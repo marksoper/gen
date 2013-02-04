@@ -1,21 +1,32 @@
 
 var mainBikeman = function() {
 
-  var canvas = document.getElementById('canvas');
-  var context = new GEN.Painterly.Context((canvas.getContext('2d')));
+  var mainCanvas = document.getElementById('mainCanvas');
+  var mainContext = new GEN.Painterly.Context((mainCanvas.getContext('2d')));
+
+  var legsCanvas = document.getElementById('legsCanvas');
+  var legsContext = new GEN.Painterly.Context((legsCanvas.getContext('2d')));
 
   var margin = 20;
-  var origin = {
+  var mainOrigin = {
     x: margin,
     y: margin
   };
-  var grid = new GEN.Grid(origin);
+  var mainGrid = new GEN.Grid(mainOrigin);
+
+  var legsOrigin = {
+    x: margin,
+    y: margin
+  };
+  var mainGrid = new GEN.Grid(mainOrigin);
 
   var resize = function() {
-    canvas.width = window.innerWidth - 0.8*margin;
-    canvas.height = window.innerHeight - 1.2*margin;
-    grid.width = canvas.width - 2*margin;
-    grid.height = canvas.height - 2*margin;
+    ["mainCanvas", "legsCanvas"].forEach(function(canvas) {
+      canvas.width = window.innerWidth - 0.8*margin;
+      canvas.height = window.innerHeight - 1.2*margin;
+      mainGrid.width = canvas.width - 2*margin;
+      mainGrid.height = canvas.height - 2*margin;
+    });
   };
   resize();
 
@@ -32,15 +43,15 @@ var mainBikeman = function() {
 
   var skyColor = genColorKeywords["lightblue"];
   var drawSky= function() {
-    context.lineWidth = Math.floor(0.15 * grid.height);
-    context.fiberDensity = 2;
-    context.strokeStyle = "#" + GEN.Color.zeroPadToSix(skyColor.toString(16));
-    context.beginPath();
+    mainContext.lineWidth = Math.floor(0.15 * mainGrid.height);
+    mainContext.fiberDensity = 2;
+    mainContext.strokeStyle = "#" + GEN.Color.zeroPadToSix(skyColor.toString(16));
+    mainContext.beginPath();
     for (var i=-1; i<10; i++) {
-      context.moveTo(Math.floor(-0.1*grid.width), Math.floor(0.1*i*grid.height));
-      context.lineTo(Math.floor(1.1*grid.width), Math.floor(0.1*i*grid.height));
+      mainContext.moveTo(Math.floor(-0.1*mainGrid.width), Math.floor(0.1*i*mainGrid.height));
+      mainContext.lineTo(Math.floor(1.1*mainGrid.width), Math.floor(0.1*i*mainGrid.height));
     }
-    context.stroke();
+    mainContext.stroke();
   };
 
 
@@ -51,24 +62,24 @@ var mainBikeman = function() {
   var groundColor = genColorKeywords["orange"];
   var groundSegments = [
     {
-      start: new GEN.Point(-0.1, 0.7, grid),
-      end: new GEN.Point(0.3, 1.1, grid)
+      start: new GEN.Point(-0.1, 0.7, mainGrid),
+      end: new GEN.Point(0.3, 1.1, mainGrid)
     },
     {
-      start: new GEN.Point(0, 1.2, grid),
-      end: new GEN.Point(1.1, 0.65, grid)
+      start: new GEN.Point(0, 1.2, mainGrid),
+      end: new GEN.Point(1.1, 0.65, mainGrid)
     }
   ];
   var drawGround = function() {
-    context.beginPath();
+    mainContext.beginPath();
     groundSegments.forEach(function(seg) {
-      context.lineWidth = Math.floor(0.45 * grid.height);
-      context.fiberDensity = 2;
-      context.strokeStyle = "#" + GEN.Color.zeroPadToSix(groundColor.toString(16));
-      context.moveTo(seg.start.x(), seg.start.y());
-      context.lineTo(seg.end.x(), seg.end.y());
+      mainContext.lineWidth = Math.floor(0.45 * mainGrid.height);
+      mainContext.fiberDensity = 2;
+      mainContext.strokeStyle = "#" + GEN.Color.zeroPadToSix(groundColor.toString(16));
+      mainContext.moveTo(seg.start.x(), seg.start.y());
+      mainContext.lineTo(seg.end.x(), seg.end.y());
     });
-    context.stroke();
+    mainContext.stroke();
   };
 
   //
@@ -78,20 +89,20 @@ var mainBikeman = function() {
   var tarColor = genColorKeywords["black"];
   var tarSegments = [
     {
-      start: new GEN.Point(-0.1, 0.95, grid),
-      end: new GEN.Point(1.1, 0.95, grid)
+      start: new GEN.Point(-0.1, 0.95, mainGrid),
+      end: new GEN.Point(1.1, 0.95, mainGrid)
     }
   ];
   var drawTar = function() {
-    context.beginPath();
+    mainContext.beginPath();
     tarSegments.forEach(function(seg) {
-      context.lineWidth = Math.floor(0.55 * grid.height);
-      context.fiberDensity = 2;
-      context.strokeStyle = "#" + GEN.Color.zeroPadToSix(tarColor.toString(16));
-      context.moveTo(seg.start.x(), seg.start.y());
-      context.lineTo(seg.end.x(), seg.end.y());
+      mainContext.lineWidth = Math.floor(0.55 * mainGrid.height);
+      mainContext.fiberDensity = 2;
+      mainContext.strokeStyle = "#" + GEN.Color.zeroPadToSix(tarColor.toString(16));
+      mainContext.moveTo(seg.start.x(), seg.start.y());
+      mainContext.lineTo(seg.end.x(), seg.end.y());
     });
-    context.stroke();
+    mainContext.stroke();
   };
 
 
@@ -105,42 +116,42 @@ var mainBikeman = function() {
   };
   var wheelSegments = {
     front: {
-      mp: new GEN.Point(0.45,0.64,grid),
+      mp: new GEN.Point(0.45,0.64,mainGrid),
       radius: 0.15
     },
     rear: {
-      mp: new GEN.Point(0.75,0.48,grid),
+      mp: new GEN.Point(0.75,0.48,mainGrid),
       radius: 0.15
     }
   };
   var drawWheel = {
     front: function() {
-      context.beginPath();
-      context.lineWidth = Math.floor(0.05 * grid.height);
-      context.fiberDensity = 2;
-      context.strokeStyle = "#" + GEN.Color.zeroPadToSix(wheelColor.front.toString(16));
-      context.arc(
+      mainContext.beginPath();
+      mainContext.lineWidth = Math.floor(0.05 * mainGrid.height);
+      mainContext.fiberDensity = 2;
+      mainContext.strokeStyle = "#" + GEN.Color.zeroPadToSix(wheelColor.front.toString(16));
+      mainContext.arc(
         wheelSegments.front.mp.x(),
         wheelSegments.front.mp.y(),
-        wheelSegments.front.radius * grid.height,
+        wheelSegments.front.radius * mainGrid.height,
         0,
         2*Math.PI
       );
-      context.stroke();
+      mainContext.stroke();
     },
     rear: function() {
-      context.beginPath();
-      context.lineWidth = Math.floor(0.05 * grid.height);
-      context.fiberDensity = 2;
-      context.strokeStyle = "#" + GEN.Color.zeroPadToSix(wheelColor.rear.toString(16));
-      context.arc(
+      mainContext.beginPath();
+      mainContext.lineWidth = Math.floor(0.05 * mainGrid.height);
+      mainContext.fiberDensity = 2;
+      mainContext.strokeStyle = "#" + GEN.Color.zeroPadToSix(wheelColor.rear.toString(16));
+      mainContext.arc(
         wheelSegments.rear.mp.x(),
         wheelSegments.rear.mp.y(),
-        wheelSegments.rear.radius * grid.height,
+        wheelSegments.rear.radius * mainGrid.height,
         0,
         2*Math.PI
       );
-      context.stroke();
+      mainContext.stroke();
     }
   };
   var drawWheels = function() {
@@ -157,29 +168,29 @@ var mainBikeman = function() {
   var bodyColor = genColorKeywords["darkslateblue"];
 
   var bodyJoints = {
-    toe: new GEN.Point(0.66, 0.54, grid),
-    heel: new GEN.Point(0.55, 0.58, grid)
+    toe: new GEN.Point(0.66, 0.54, mainGrid),
+    heel: new GEN.Point(0.55, 0.58, mainGrid)
   };
 
   var bodySegments = [
     {
       start: "toe",
       end: "heel",
-      cp1: new GEN.Point(0.62, 0.54, grid),
-      cp2: new GEN.Point(0.57, 0.58, grid)
+      cp1: new GEN.Point(0.62, 0.54, mainGrid),
+      cp2: new GEN.Point(0.57, 0.58, mainGrid)
     }
   ];
 
   var drawBody = function() {
-    context.beginPath();
-    context.lineWidth = Math.floor(0.10 * grid.height);
-    context.fiberDensity = 2;
-    context.strokeStyle = "#" + GEN.Color.zeroPadToSix(bodyColor.toString(16));
+    mainContext.beginPath();
+    mainContext.lineWidth = Math.floor(0.10 * mainGrid.height);
+    mainContext.fiberDensity = 2;
+    mainContext.strokeStyle = "#" + GEN.Color.zeroPadToSix(bodyColor.toString(16));
     bodySegments.forEach(function(seg) {
-      context.moveTo(bodyJoints[seg.start].x(), bodyJoints[seg.start].y());
-      context.bezierCurveTo(seg.cp1.x(), seg.cp2.y(), seg.cp2.x(), seg.cp2.y(), bodyJoints[seg.end].x(), bodyJoints[seg.end].y() );
+      mainContext.moveTo(bodyJoints[seg.start].x(), bodyJoints[seg.start].y());
+      mainContext.bezierCurveTo(seg.cp1.x(), seg.cp2.y(), seg.cp2.x(), seg.cp2.y(), bodyJoints[seg.end].x(), bodyJoints[seg.end].y() );
     });
-    context.stroke();
+    mainContext.stroke();
   };
 
 
