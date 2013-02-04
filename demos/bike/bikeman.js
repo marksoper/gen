@@ -41,9 +41,6 @@ var mainBikeman = function() {
 
   var legsCanvas = document.getElementById('legsCanvas');
   var legsContext = new GEN.Painterly.Context((legsCanvas.getContext('2d')));
-  // TODO: build rotate into the GEN context
-  legsContext.context2d.translate(0.5*legsCanvas.width, 0.5*legsCanvas.height);
-  legsContext.context2d.rotate(Math.PI);
 
   var margin = 20;
   var mainOrigin = {
@@ -121,12 +118,7 @@ var mainBikeman = function() {
 
   var t = 0;
   var drawLegs = function() {
-    //clearContext(legsContext);
     legsContext.beginPath();
-    //legsContext.context2d.save();
-    legsContext.context2d.translate(0.5*legsCanvas.width, 0.5*legsCanvas.height);
-    legsContext.context2d.rotate(0.05*Math.PI);
-    //legsContext.context2d.restore();
     legsContext.lineWidth = Math.floor(0.10 * mainGrid.height);
     legsContext.fiberDensity = 2;
     legsContext.strokeStyle = "#" + GEN.Color.zeroPadToSix(legsColor.toString(16));
