@@ -298,8 +298,8 @@ var mainBikeman = function() {
     drawWheels();
     drawTar();
     drawGround();
-    drawBody();
-    drawLegs();
+    //drawBody();
+    //drawLegs();
   };
   draw();
 
